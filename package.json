@@ -1,0 +1,33 @@
+{
+  "name": "blabotanie",
+  "version": "1.0.0",
+  "description": "Your Electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@stomp/stompjs": "^5.4.0",
+    "electron-updater": "^6.6.2",
+    "sockjs-client": "^1.5.0"
+  },
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "appId": "com.blabotanie.app",
+    "productName": "Blabotanie",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Miffle",
+        "repo": "blabotanieClient"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
