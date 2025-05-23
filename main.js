@@ -6,19 +6,23 @@ const { dialog } = require("electron");
 autoUpdater.autoDownload = true;
 let mainWindow;
 let appIsQuitting = false; // Лучше использовать отдельную переменную для отслеживания состояния
-
+app.setAppUserModelId("com.blabotanie.app"); // должен совпадать с appId из build
 
 let tray = null;
 function createWindow () {
+    require('@electron/remote/main').initialize();
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            enableRemoteModule: true, // важно!
         },
         show: false // Сначала окно не показываем
     });
+    require("@electron/remote/main").enable(mainWindow.webContents);
+
     mainWindow.loadFile('index.html');
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
@@ -87,9 +91,8 @@ app.whenReady().then(() => {
     });
 
     autoUpdater.on("update-downloaded", () => {
-        if (mainWindow) {
-            mainWindow.webContents.send("update_ready");
-        }
+        appIsQuitting = true;
+        autoUpdater.quitAndInstall();
     });
 
     // автозапуск

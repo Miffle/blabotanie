@@ -38,6 +38,30 @@ h2, h3 {
     flex-direction: column;
     overflow: hidden;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.modal-buttons button {
+    margin: 0 1rem;
+}
+
 .user-info {
     position: fixed;
     bottom: 1rem;

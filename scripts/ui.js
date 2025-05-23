@@ -4,21 +4,8 @@ const sounds = {
     newMessage: new Audio("resources/sounds/newMessage.mp3")
     //    end: new Audio("assets/sounds/end-call.mp3")
 };
-const { ipcRenderer } = require("electron");
 let callStartTime = null;
 let callTimerInterval = null;
-ipcRenderer.on("update_progress", (event, percent) => {
-    document.getElementById("update-container").style.display = "block";
-    document.getElementById("update-progress").value = percent;
-    document.getElementById("update-percent").innerText = `${Math.floor(percent)}%`;
-});
-
-
-
-ipcRenderer.on("update_ready", () => {
-    // Например, автоматически начать установку
-    ipcRenderer.send("install_update");
-});
 // Проверяем токены при загрузке страницы
 window.onload = () => {
     if (window.location.pathname.endsWith("index.html")) {

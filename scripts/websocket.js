@@ -33,13 +33,39 @@ function subscribeToTopics() {
         if(msg.fromUser !== currentChatUser && msg.fromUser !== localStorage.getItem("username")){
             sounds.newMessage.play()
         }
-        if (msg.fromUser === currentChatUser) {
+        const isOwnMessage = msg.fromUser === localStorage.getItem("username");
+        const chatIsOpen = msg.fromUser === currentChatUser;
+        const focused = isAppFocused();
+        const visible = isWindowVisible();
+        if (chatIsOpen && focused && visible) {
             renderMessage(msg);
         } else {
-            unreadMessages[msg.fromUser] = (unreadMessages[msg.fromUser] || 0) + 1;
-            updateUnreadIndicators();
-        }
-    });
+            if (!isOwnMessage) {
+                if (!chatIsOpen) {
+                    unreadMessages[msg.fromUser] = (unreadMessages[msg.fromUser] || 0) + 1;
+                    updateUnreadIndicators();
+                }
+
+                sounds.newMessage.play();
+
+                if (!focused || !visible) {
+                    new Notification(`Новое сообщение от ${msg.fromUser}`, {
+                        body: msg.message.length > 100 ? msg.message.slice(0, 100) + "..." : msg.message,
+                        icon: "resources/icon/icon64.ico"
+                    }).onclick = () => {
+                        openChat(msg.fromUser);
+                        const win = require("@electron/remote").BrowserWindow.getAllWindows()[0];
+                        win.show();
+                        win.focus();
+                    };
+                }
+
+                // Показать сообщение даже если чат открыт, но окно скрыто
+                if (chatIsOpen && (!focused || !visible)) {
+                    renderMessage(msg);
+                }
+            }
+        }    });
     stompClient.subscribe("/user/queue/chat/history", (message) => {
         const msg = JSON.parse(message.body);
         const messages = msg.messages
@@ -60,6 +86,7 @@ function subscribeToTopics() {
 
     stompClient.subscribe("/user/queue/call/answer", async message => {
         const data = JSON.parse(message.body);
+        document.getElementById("call-status").innerText = "Звонок активен";
         await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: "answer", sdp: data.sdp }));
         // После установки remoteDescription добавляем все накопленные кандидаты
         for (const candidate of pendingCandidates) {

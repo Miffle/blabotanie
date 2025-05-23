@@ -23,9 +23,21 @@
         <div id="outgoing-requests" style="display: none;"></div>
     </div>
     <div class="right-main">
+        <div id="incoming-call-modal" class="modal">
+            <div class="modal-content">
+                <p><span id="caller-name-modal"></span> звонит</p>
+                <div class="modal-buttons">
+                    <button id="accept-call-btn">Принять</button>
+                    <button id="reject-call-btn">Отклонить</button>
+                </div>
+            </div>
+        </div>
         <div id="call-window" style="display: none;">
             <h3>Разговор с пользователем: <b><span id="caller-name"></span></b></h3>
             <div><strong>Время звонка:</strong> <span id="call-timer">00:00</span></div>
+            <div id="call-status" style="margin-top: 10px; font-size: 14px; color: #555;">
+                Ожидание ответа...
+            </div>
             <button id="end-call" onclick="selfEndCall()">Завершить звонок</button>
             <button id="toggle-mic" onclick="toggleMic()">🎤 ✅</button>
             <button id="toggle-audio" onclick="toggleRemoteAudio()">🔊 ✅</button>

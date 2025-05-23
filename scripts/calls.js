@@ -31,6 +31,7 @@ function toggleRemoteAudio() {
 }
 async function callFriend(friendUsername) {
     setButtonUnclickable(true)
+    document.getElementById("call-status").innerText = "Ожидание ответа...";
     currentCallUser = friendUsername;
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     document.getElementById("localAudio").srcObject = localStream;
@@ -85,41 +86,56 @@ function createPeerConnection(initiator, called) {
 }
 async function handleIncomingOffer(data) {
     sounds.incoming.play();
-    if (!confirm(`Входящий звонок от ${data.initiator}. Принять?`)) {
+    currentCallUser = data.initiator;
+    callStartTime = new Date(data.startTime);
+    document.getElementById("call-status").innerText = "Звонок активен";
+    const modal = document.getElementById("incoming-call-modal");
+    const nameElem = document.getElementById("caller-name-modal");
+    nameElem.innerText = data.initiator;
+    modal.style.display = "flex";
+
+    const acceptBtn = document.getElementById("accept-call-btn");
+    const rejectBtn = document.getElementById("reject-call-btn");
+
+    acceptBtn.onclick = async () => {
+        modal.style.display = "none";
+        sounds.incoming.pause();
+        sounds.incoming.currentTime = 0;
+        await acceptCall(data);
+    };
+
+    rejectBtn.onclick = () => {
+        modal.style.display = "none";
         sounds.incoming.pause();
         sounds.incoming.currentTime = 0;
         stompClient.publish({
             destination: "/app/call/reject",
             body: JSON.stringify({ recipientId: data.initiator })
         });
-        return;
-    }
-    sounds.incoming.pause();
-    sounds.incoming.currentTime = 0;
-    const startTime = new Date(data.startTime); // сохранить в переменную
-    callStartTime = startTime;
-
-    setButtonUnclickable(true)
-
-    currentCallUser = data.initiator;
+    };
+}
+    async function acceptCall(data) {
+    setButtonUnclickable(true);
     localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     document.getElementById("localAudio").srcObject = localStream;
 
     peerConnection = createPeerConnection(currentCallUser, localStorage.getItem("username"));
     localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
     await peerConnection.setRemoteDescription(new RTCSessionDescription({ type: "offer", sdp: data.sdp }));
-    // После установки remoteDescription добавляем все накопленные кандидаты
+
     for (const candidate of pendingCandidates) {
         try {
             await peerConnection.addIceCandidate(candidate);
         } catch (e) {
-            console.error("Ошибка при добавлении отложенного ICE-кандидата:", e);
+            console.error("Ошибка при добавлении ICE:", e);
         }
     }
     pendingCandidates = [];
+
     const answer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answer);
-    showCallBlock(data.initiator,false)
+    showCallBlock(currentCallUser, false);
+
     stompClient.publish({
         destination: "/app/call/answer",
         body: JSON.stringify({
@@ -129,6 +145,7 @@ async function handleIncomingOffer(data) {
         })
     });
 }
+
 function setButtonUnclickable(disable) {
     const callButtons = document.querySelectorAll("button.call");
     callButtons.forEach(btn => {
@@ -181,7 +198,13 @@ async function autoEndCall() {
         remoteStream.getTracks().forEach(track => track.stop());
         remoteStream = null;  // Очищаем удаленный поток
     }
-
+    const incomingModal = document.getElementById("incoming-call-modal");
+    if (incomingModal) {
+        incomingModal.style.display = "none";
+        sounds.incoming.pause();
+        sounds.incoming.currentTime = 0;
+    }
+    document.getElementById("call-status").innerText = "";
     document.getElementById("remoteAudio").srcObject = null;
     document.getElementById("localAudio").srcObject = null;
     document.getElementById("call-window").style.display = "none"; // Скрываем окно звонка
