@@ -1,6 +1,6 @@
 {
   "name": "blabotanie",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Звоночки-говорочки",
   "author": "ftliwdt",
   "main": "main.js",
@@ -22,6 +22,12 @@
     "appId": "com.blabotanie.app",
     "productName": "Blabotanie",
     "icon": "resources/icon/icon256.ico",
+    "protocols": [
+      {
+        "name": "Blabotanie",
+        "schemes": ["blabotanie"]
+      }
+    ],
     "publish": [
       {
         "provider": "github",

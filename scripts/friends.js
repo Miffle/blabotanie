@@ -117,11 +117,31 @@ function updateFriendStatus(friendUsername, isOnline) {
         }
     }
 }
-
+ipcRenderer.on('deeplink-add-friend', (event, username) => {
+    document.getElementById("add-friend-username").value = username;
+    sendFriendRequest();
+});
 
 async function sendFriendRequest() {
-    const username = document.getElementById("add-friend-username").value;
+    const input = document.getElementById("add-friend-username").value;
+    var username;
     const token = localStorage.getItem("token");
+    if (input.startsWith("blabotanie://")) {
+        try {
+            const url = new URL(input);
+            if (url.pathname === "//add-friend") {
+                const usernameParam = url.searchParams.get("username");
+                if (usernameParam) {
+                    username = usernameParam;
+                }
+            }
+        } catch (e) {
+            console.error("Невалидная ссылка:", e);
+            return;
+        }
+    }else{
+        username = input;
+    }
     const res = await fetch(`${API_URL}/api/friends/request`, {
         method: "POST",
         headers: {

@@ -10,7 +10,7 @@
     <div class="left-main">
         <h2>Друзья</h2>
         <div class="add-friend">
-            <input type="text" id="add-friend-username" placeholder="Имя пользователя"/>
+            <input type="text" id="add-friend-username" placeholder="Введите ник или ссылку на профиль"/>
             <button onclick="sendFriendRequest()">Добавить</button>
             <p id="add-friend-status" class="status-msg"></p>
         </div>
@@ -60,6 +60,7 @@
     </div>
     <div class="user-info">
         <span id="current-username">👤 user</span>
+        <button id="share-profile-button">🔗 Поделиться</button>
         <button id="logout-button">Выйти</button>
     </div>
     <div id="update-container" style="display: none; position: fixed; bottom: 10px; right: 10px; background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 6px;">
