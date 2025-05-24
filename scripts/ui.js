@@ -90,3 +90,20 @@ function updateSectionVisibility(sectionId, items) {
         title.style.display = items.length > 0 ? "block" : "none";
     }
 }
+document.getElementById("share-profile-button").addEventListener("click", () => {
+    const username = localStorage.getItem("username");
+    const deeplink = `blabotanie://add-friend?username=${encodeURIComponent(username)}`;
+    const button = document.getElementById("share-profile-button");
+    navigator.clipboard.writeText(deeplink)
+        .then(() => {
+        const originalText = button.innerText;
+        button.innerText = "✅ Скопировано";
+        setTimeout(() => {
+            button.innerText = originalText;
+        }, 2000); // Вернём обратно через 2 секунды
+    })
+        .catch(err => {
+        console.error("Не удалось скопировать ссылку:", err);
+    });
+});
+

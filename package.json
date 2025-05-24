@@ -22,6 +22,12 @@
     "appId": "com.blabotanie.app",
     "productName": "Blabotanie",
     "icon": "resources/icon/icon256.ico",
+    "protocols": [
+      {
+        "name": "Blabotanie",
+        "schemes": ["blabotanie"]
+      }
+    ],
     "publish": [
       {
         "provider": "github",
