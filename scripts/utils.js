@@ -1,5 +1,5 @@
-const API_URL = "http://193.233.113.180:8087";
-const WS_URL = "http://193.233.113.180:8087/ws";
+const API_URL = "http://localhost:8087";
+const WS_URL = "http://localhost:8087/ws";
 const SockJS = require('sockjs-client');
 const { Client } = require('@stomp/stompjs');
 const { ipcRenderer } = require("electron");

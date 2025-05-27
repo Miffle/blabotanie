@@ -1,0 +1,84 @@
+.call-history {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  flex-direction: column;
+  display: flex;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+}
+
+.call-history h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.call-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.call-history-item {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+  transition: background-color 0.2s;
+}
+
+.call-history-item:hover {
+  background: #e9ecef;
+}
+
+.call-info {
+  display: grid;
+  grid-template-columns: 100px 140px 130px 100px 100px;
+  /* тип, участник, время, длительность, статус */
+  gap: 15px;
+  align-items: center;
+}
+
+.call-type {
+  font-weight: 500;
+  color: #495057;
+}
+
+.call-participant {
+  color: #212529;
+  font-weight: 500;
+}
+
+.call-time {
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.call-duration {
+  color: #495057;
+  font-family: monospace;
+}
+
+.call-status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.call-status:contains("Завершён") {
+  background: #d4edda;
+  color: #155724;
+}
+
+.call-status:contains("Отклонён") {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.call-status:contains("Пропущен") {
+  background: #fff3cd;
+  color: #856404;
+}
