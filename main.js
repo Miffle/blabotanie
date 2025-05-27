@@ -34,7 +34,7 @@ function createWindow () {
     });
     require("@electron/remote/main").enable(mainWindow.webContents);
 
-    mainWindow.loadFile('index.html');
+    mainWindow.loadFile('dist-frontend/index.html');
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
         if (deeplinkUrl) {

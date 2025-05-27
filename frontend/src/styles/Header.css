@@ -1,0 +1,82 @@
+.header {
+    background: linear-gradient(90deg, #f0f0f0 60%, #e0e7ff 100%);
+    padding: 14px 32px;
+    box-sizing: border-box;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(60,80,180,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header__nav {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .header__user-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .profile-btn {
+    background: transparent;
+    border: none;
+    color: #23272f;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .logout {
+    background: transparent;
+    border: none;
+    color: #23272f;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+  }
+  .logout:hover {
+    background: #ffeaea;
+    color: #e53935;
+  }
+  .header a {
+    text-decoration: none;
+    color: #23272f;
+    font-size: 1.15rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: background 0.18s, color 0.18s;
+  }
+.header a:first-child {
+  font-size: 1.6rem;
+  font-weight: 800;
+  padding: 0 14px;
+}
+  .header a.active, .header a:hover {
+    background: #e0e7ff;
+    color: #2563eb;
+  }
+
+  @media (max-width: 800px) {
+    .header {
+      padding: 8px 4px;
+    }
+    .header__nav {
+      gap: 10px;
+    }
+    .header a {
+      font-size: 1rem;
+      padding: 5px 8px;
+    }
+  }
+  
