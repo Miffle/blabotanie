@@ -54,7 +54,7 @@ function renderMessage(msg) {
     div.className = fromMe ? "message sent" : "message received";
     const sender = fromMe ? "Вы" : msg.fromUser;
     const safeText = escapeHtml(msg.message);
-    div.innerHTML = `<b>${sender}</b>: ${safeText}`;
+    div.innerHTML = `<b>${sender}</b>: ${linkify(safeText)}`;
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
 }

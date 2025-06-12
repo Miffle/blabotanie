@@ -5,8 +5,9 @@ import { useWebSocket } from "../context/WebSocketContext";
 export default function Header({ incomingRequestsCount = 0 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { activeCall } = useWebSocket();
+  const { activeCall, disconnectWebSocket } = useWebSocket();
   const logout = () => {
+    disconnectWebSocket();
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("username");
@@ -21,7 +22,7 @@ export default function Header({ incomingRequestsCount = 0 }) {
           👥 Друзья{incomingRequestsCount > 0 && <span className="badge">+{incomingRequestsCount}</span>}
         </Link>
         <Link className={location.pathname === "/calls" ? "active" : ""} to="/calls">📞 Звонки</Link>
-        {activeCall && (
+        {activeCall && location.pathname !== "/call" && (
           <button className="current-call-btn" onClick={() => navigate("/call")}>Текущий звонок</button>
         )}
       </nav>

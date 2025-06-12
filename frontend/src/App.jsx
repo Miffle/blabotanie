@@ -5,6 +5,7 @@ import MainLayout from "./layouts/MainLayout";
 import FriendsPage from "./pages/FriendsPage";
 import CallsPage from "./pages/CallsPage";
 import CallPage from "./pages/CallPage";
+import HomePage from "./pages/HomePage";
 import { WebSocketProvider } from "./context/WebSocketContext";
 import RequireAuth from "./components/RequireAuth";
 
@@ -24,6 +25,7 @@ export default function App() {
             <MainLayout />
             </RequireAuth>
           }>
+            <Route index element={<RequireAuth><HomePage /></RequireAuth>} />
             <Route path="/friends" element={
               <RequireAuth>
                 <FriendsPage />

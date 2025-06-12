@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function CallModalController({ open, offer, caller, startTime, onClose }) {
   const [accepted, setAccepted] = useState(false);
-  const { sendCallReject, setActiveCall } = useWebSocket();
+  const { sendCallReject, setActiveCall, resetCallState } = useWebSocket();
   const navigate = useNavigate();
 
   // Локальные копии параметров звонка
@@ -37,11 +37,13 @@ export default function CallModalController({ open, offer, caller, startTime, on
   const handleReject = () => {
     sendCallReject(localCaller);
     setAccepted(false);
+    resetCallState();
     onClose();
   };
 
   const handleCallEnd = () => {
     setAccepted(false);
+    resetCallState();
     onClose();
   };
 

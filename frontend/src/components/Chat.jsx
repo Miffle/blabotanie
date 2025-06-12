@@ -7,8 +7,7 @@ export default function Chat({ friend }) {
     requestChatHistory,
     chatHistory,
     sendChatMessage,
-    chatMessages,
-    setChatMessages
+    chatMessages
   } = useWebSocket();
 
   const [loading, setLoading] = useState(false);
@@ -51,14 +50,6 @@ export default function Chat({ friend }) {
     e.preventDefault();
     if (!input.trim() || !friend) return;
 
-    const newMessage = {
-      fromUser: username,
-      toUser: friend.friendUsername,
-      message: input.trim()
-    };
-
-    // Отображаем сразу у отправителя
-    setChatMessages(msgs => [...msgs, newMessage]);
     sendChatMessage(friend.friendUsername, input.trim());
     setInput("");
   };

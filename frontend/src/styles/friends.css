@@ -64,10 +64,12 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 6px;
     background: transparent;
+    padding: 5px;
   }
   
   .friend-item span {
     flex-grow: 1;
+    font-weight: bold;
   }
 
   .friend-item .online {

@@ -89,3 +89,10 @@ export const sendCallReject = (recipientId) => {
     body: JSON.stringify({ recipientId })
   });
 };
+
+export const disconnectWebSocket = () => {
+  if (stompClient) {
+    stompClient.deactivate();
+    stompClient = null;
+  }
+};

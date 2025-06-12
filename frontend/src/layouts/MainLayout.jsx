@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Header from '../components/Header';
 
 export default function MainLayout() {
-  const { callOffer, setCallOffer, activeCall } = useWebSocket();
+  const { callOffer, setCallOffer, activeCall, callEnd, callReject, resetCallState } = useWebSocket();
   const [incomingCallOpen, setIncomingCallOpen] = useState(false);
   const [outgoingCall, setOutgoingCall] = useState(null);
   const location = useLocation();
@@ -16,8 +16,21 @@ export default function MainLayout() {
   const [outgoingRequestsCount, setOutgoingRequestsCount] = useState(0);
 
   useEffect(() => {
-    if (callOffer) setIncomingCallOpen(true);
-  }, [callOffer]);
+    if (callOffer && !activeCall && !callEnd && !callReject) {
+      setIncomingCallOpen(true);
+    } else {
+      setIncomingCallOpen(false);
+    }
+  }, [callOffer, activeCall, callEnd, callReject]);
+
+  // После завершения звонка сбрасываем все состояния
+  useEffect(() => {
+    if (callEnd || callReject) {
+      resetCallState();
+      setIncomingCallOpen(false);
+      setOutgoingCall(null);
+    }
+  }, [callEnd, callReject, resetCallState]);
 
   const handleCloseCallModal = () => {
     setIncomingCallOpen(false);
@@ -25,7 +38,9 @@ export default function MainLayout() {
   };
 
   const handleCallFriend = (friend) => {
-    setOutgoingCall({ friendUsername: friend.friendUsername });
+    if (!activeCall && !callOffer) {
+      setOutgoingCall({ friendUsername: friend.friendUsername });
+    }
   };
 
   const handleCloseOutgoingCall = () => {

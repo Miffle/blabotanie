@@ -28,8 +28,7 @@ export default function ActiveCallModal({
     callReject,
     setCallAnswer,
     setIceCandidate,
-    setCallEnd,
-    setCallReject
+    resetCallState
   } = useWebSocket();
 
   // Аналоги глобальных переменных
@@ -178,8 +177,7 @@ export default function ActiveCallModal({
     if ((callEnd && open) || (callReject && open)) {
       cleanup();
       setStatus("Звонок завершён");
-      setCallEnd(false);
-      setCallReject(false);
+      resetCallState();
       onClose();
     }
     // eslint-disable-next-line
@@ -187,6 +185,8 @@ export default function ActiveCallModal({
 
   function cleanup() {
     if (peerConnectionRef.current) {
+      peerConnectionRef.current.onicecandidate = null;
+      peerConnectionRef.current.ontrack = null;
       peerConnectionRef.current.close();
       peerConnectionRef.current = null;
     }
@@ -200,6 +200,7 @@ export default function ActiveCallModal({
     }
     if (timerInterval.current) {
       clearInterval(timerInterval.current);
+      timerInterval.current = null;
     }
     callStartTime.current = null;
     pendingCandidatesRef.current = [];
@@ -210,6 +211,7 @@ export default function ActiveCallModal({
     sendCallEnd(friendUsername, myUsername);
     cleanup();
     setStatus("Звонок завершён");
+    resetCallState();
     onClose();
   }
 
