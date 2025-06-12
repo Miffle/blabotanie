@@ -7,7 +7,7 @@
   flex-direction: column;
   display: flex;
   overflow-y: auto;
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 120px);
 }
 
 .call-history h2 {

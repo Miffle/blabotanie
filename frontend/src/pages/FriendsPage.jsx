@@ -26,7 +26,7 @@ export default function FriendsPage() {
   const [tab, setTab] = useState("friends");
   const [search, setSearch] = useState("");
   const [inviteStatus, setInviteStatus] = useState("");
-  const { presence, friendEvent, setActiveCall } = useWebSocket();
+  const { presence, friendEvent, setActiveCall, activeCall, callOffer } = useWebSocket();
   const [selectedFriend, setSelectedFriend] = useState(null);
   const navigate = useNavigate();
   const outletContext = useOutletContext();
@@ -127,12 +127,14 @@ export default function FriendsPage() {
                   onSelect={() => setSelectedFriend(f)}
                   selected={selectedFriend && selectedFriend.friendId === f.friendId}
                   onCall={() => {
-                    setActiveCall({
-                      initiator: localStorage.getItem("username"),
-                      called: f.friendUsername,
-                      startTime: new Date().toISOString()
-                    });
-                    navigate("/call");
+                    if (!activeCall && !callOffer) {
+                      setActiveCall({
+                        initiator: localStorage.getItem("username"),
+                        called: f.friendUsername,
+                        startTime: new Date().toISOString()
+                      });
+                      navigate("/call");
+                    }
                   }}
                 />
               )}

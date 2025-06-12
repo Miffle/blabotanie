@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:8087";
-const WS_URL = "http://localhost:8087/ws";
+const API_URL = "http://193.233.113.180:8087";
+const WS_URL = "http://193.233.113.180:8087/ws";
 const SockJS = require('sockjs-client');
 const { Client } = require('@stomp/stompjs');
 const { ipcRenderer } = require("electron");
@@ -20,7 +20,13 @@ ipcRenderer.on("update_progress", (event, percent) => {
     document.getElementById("update-progress").value = percent;
     document.getElementById("update-percent").innerText = `${Math.floor(percent)}%`;
 });
-
+function linkify(text) {
+    // Превращает http/https ссылки в <a>
+    return text.replace(
+        /(\bhttps?:\/\/[^\s]+)/gi,
+        '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+    );
+}
 
 
 ipcRenderer.on("update_ready", () => {

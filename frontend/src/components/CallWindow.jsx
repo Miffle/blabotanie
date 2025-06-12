@@ -8,7 +8,7 @@ const iceServers = {
   ]
 };
 
-export default function CallWindow({ activeCall, onEnd }) {
+export default function CallWindow({ activeCall, onEnd, mini = false }) {
   const {
     sendCallOffer,
     sendCallAnswer,
@@ -20,8 +20,7 @@ export default function CallWindow({ activeCall, onEnd }) {
     callReject,
     setCallAnswer,
     setIceCandidate,
-    setCallEnd,
-    setCallReject
+    resetCallState
   } = useWebSocket();
 
   const myUsername = localStorage.getItem("username");
@@ -167,8 +166,7 @@ export default function CallWindow({ activeCall, onEnd }) {
     if (callEnd || callReject) {
       cleanup();
       setStatus("Звонок завершён");
-      setCallEnd(false);
-      setCallReject(false);
+      resetCallState();
       if (onEnd) onEnd();
     }
     // eslint-disable-next-line
@@ -176,6 +174,8 @@ export default function CallWindow({ activeCall, onEnd }) {
 
   function cleanup() {
     if (peerConnectionRef.current) {
+      peerConnectionRef.current.onicecandidate = null;
+      peerConnectionRef.current.ontrack = null;
       peerConnectionRef.current.close();
       peerConnectionRef.current = null;
     }
@@ -189,6 +189,7 @@ export default function CallWindow({ activeCall, onEnd }) {
     }
     if (timerInterval.current) {
       clearInterval(timerInterval.current);
+      timerInterval.current = null;
     }
     callStartTime.current = null;
     pendingCandidatesRef.current = [];
@@ -198,6 +199,7 @@ export default function CallWindow({ activeCall, onEnd }) {
     sendCallEnd(friendUsername, myUsername);
     cleanup();
     setStatus("Звонок завершён");
+    resetCallState();
     if (onEnd) onEnd();
   }
 
@@ -251,7 +253,7 @@ export default function CallWindow({ activeCall, onEnd }) {
   }, [localStream]);
 
   return (
-    <div className="call-main-block">
+    <div className={mini ? "mini-call-main-block" : "call-main-block"}>
       <div className="call-users-block">
         <div className="call-user-card self">
           <div className="call-user-name">{myUsername}</div>
@@ -268,12 +270,19 @@ export default function CallWindow({ activeCall, onEnd }) {
         <button className={`call-control-btn ${isMicMuted ? "muted" : ""}`} onClick={toggleMic} title={isMicMuted ? "Включить микрофон" : "Выключить микрофон"}>
           <i className={`fas ${isMicMuted ? "fa-microphone-slash" : "fa-microphone"}`} />
         </button>
-        <button className={`call-control-btn ${isRemoteMuted ? "muted" : ""}`} onClick={toggleRemoteAudio} title={isRemoteMuted ? "Включить звук" : "Выключить звук"}>
-          <i className={`fas ${isRemoteMuted ? "fa-volume-mute" : "fa-volume-up"}`} />
-        </button>
+        {!mini && (
+          <button className={`call-control-btn ${isRemoteMuted ? "muted" : ""}`} onClick={toggleRemoteAudio} title={isRemoteMuted ? "Включить звук" : "Выключить звук"}>
+            <i className={`fas ${isRemoteMuted ? "fa-volume-mute" : "fa-volume-up"}`} />
+          </button>
+        )}
         <button className="call-control-btn end-call" onClick={handleEndCall} title="Завершить звонок">
           <i className="fas fa-phone-slash" />
         </button>
+        {mini && (
+          <button className="call-control-btn" onClick={() => window.location.hash = "#/call"} title="Развернуть звонок">
+            <i className="fas fa-up-right-and-down-left-from-center" />
+          </button>
+        )}
       </div>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     </div>

@@ -7,7 +7,8 @@ import {
   sendCallAnswer,
   sendIceCandidate,
   sendCallEnd,
-  sendCallReject
+  sendCallReject,
+  disconnectWebSocket
 } from "../ws/client";
 import { subscribeToTopics } from "../ws/subscriptions";
 
@@ -60,6 +61,15 @@ export const WebSocketProvider = ({ children }) => {
     });
   }, []);
 
+  const resetCallState = () => {
+    setActiveCall(null);
+    setCallOffer(null);
+    setCallAnswer(null);
+    setIceCandidate(null);
+    setCallEnd(false);
+    setCallReject(false);
+  };
+
   return (
     <WebSocketContext.Provider value={{
       sendChatMessage,
@@ -69,6 +79,7 @@ export const WebSocketProvider = ({ children }) => {
       sendIceCandidate,
       sendCallEnd,
       sendCallReject,
+      disconnectWebSocket,
       chatMessages,
       chatHistory,
       presence,
@@ -88,7 +99,8 @@ export const WebSocketProvider = ({ children }) => {
       setIceCandidate,
       setCallEnd,
       setCallReject,
-      setActiveCall
+      setActiveCall,
+      resetCallState
     }}>
       {children}
     </WebSocketContext.Provider>

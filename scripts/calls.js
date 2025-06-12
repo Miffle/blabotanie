@@ -33,7 +33,13 @@ async function callFriend(friendUsername) {
     setButtonUnclickable(true)
     document.getElementById("call-status").innerText = "Ожидание ответа...";
     currentCallUser = friendUsername;
-    localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    localStream = await navigator.mediaDevices.getUserMedia({   audio: {
+        noiseSuppression: true,
+        echoCancellation: true,
+        autoGainControl: true,
+        sampleRate: 44100,
+        sampleSize: 16
+    } });
     document.getElementById("localAudio").srcObject = localStream;
 
     peerConnection = createPeerConnection(localStorage.getItem("username"), friendUsername);
