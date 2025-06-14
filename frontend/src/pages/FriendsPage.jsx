@@ -34,14 +34,17 @@ export default function FriendsPage() {
   const setOutgoingRequestsCount = outletContext?.setOutgoingRequestsCount;
 
   const refresh = () => {
-    getAllFriends().then(setFriends);
-    getIncomingRequests().then(setIncoming);
-    getOutgoingRequests().then(setOutgoing);
+    if (tab === "friends") {
+      getAllFriends().then(setFriends);
+    } else if (tab === "requests") {
+      getIncomingRequests().then(setIncoming);
+      getOutgoingRequests().then(setOutgoing);
+    }
   };
 
   useEffect(() => {
     refresh();
-  }, []);
+  }, [tab]);
 
   // Обновляем индикаторы в Header при изменении заявок
   useEffect(() => {
@@ -64,15 +67,21 @@ export default function FriendsPage() {
   useEffect(() => {
     if (!friendEvent.type) return;
     if (friendEvent.type === 'friendList') {
-      getAllFriends().then(data => setFriends([...data]));
+      if (tab === "friends") {
+        getAllFriends().then(data => setFriends([...data]));
+      }
     } else if (friendEvent.type === 'incomingRequests') {
-      getIncomingRequests().then(data => setIncoming([...data]));
+      if (tab === "requests") {
+        getIncomingRequests().then(data => setIncoming([...data]));
+      }
     } else if (friendEvent.type === 'outgoingRequests') {
-      getOutgoingRequests().then(data => setOutgoing([...data]));
+      if (tab === "requests") {
+        getOutgoingRequests().then(data => setOutgoing([...data]));
+      }
     } else {
       refresh();
     }
-  }, [friendEvent]);
+  }, [friendEvent, tab]);
 
   const handleSendInvite = async (e) => {
     e.preventDefault();

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { refreshTokenIfNeeded } from "../api/auth";
+import { isAuthenticated, refreshTokenIfNeeded } from "../api/auth";
 
 export default function RequireAuth({ children }) {
   const [authChecked, setAuthChecked] = useState(false);
@@ -9,30 +9,27 @@ export default function RequireAuth({ children }) {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
+      if (isAuthenticated()) {
         setIsAuth(true);
         setAuthChecked(true);
         return;
       }
+
       // Если токена нет, но есть refreshToken — пробуем обновить
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (refreshToken) {
-        const refreshed = await refreshTokenIfNeeded();
-        setIsAuth(refreshed);
-        setAuthChecked(true);
-        return;
-      }
-      setIsAuth(false);
+      const refreshed = await refreshTokenIfNeeded();
+      setIsAuth(refreshed);
       setAuthChecked(true);
     };
     checkAuth();
   }, []);
 
-  if (!authChecked) return null; // Можно показать лоадер
+  if (!authChecked) {
+    return <div>Загрузка...</div>; // Можно заменить на компонент-лоадер
+  }
 
   if (!isAuth) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
+
   return children;
 }

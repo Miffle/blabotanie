@@ -1,4 +1,9 @@
-const API_URL = "http://193.233.113.180:8087/api";
+import { API_URL, API_PATHS } from "../config";
+
+export function getAuthHeader() {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function login(username, password) {
   const res = await fetch(`${API_URL}/auth/login`, {
@@ -7,8 +12,11 @@ export async function login(username, password) {
     body: JSON.stringify({ username, password }),
   });
   if (!res.ok) throw new Error("Ошибка авторизации");
-  return res.json();
+  const data = await res.json();
+  saveTokens(data);
+  return data;
 }
+
 export async function register(username, password) {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
@@ -22,19 +30,39 @@ export async function register(username, password) {
 export async function refreshTokenIfNeeded() {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) return false;
-  const res = await fetch(`${API_URL}/api/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
-  });
-  if (!res.ok) {
-    localStorage.clear();
-    window.location.href = "/auth";
+
+  try {
+    const res = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Ошибка обновления токена");
+    }
+
+    const data = await res.json();
+    saveTokens(data);
+    return true;
+  } catch (error) {
+    console.error("Ошибка при обновлении токена:", error);
     return false;
   }
-  const data = await res.json();
+}
+
+function saveTokens(data) {
   localStorage.setItem("token", data.token);
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
-  return true;
+}
+
+export function clearTokens() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("username");
+}
+
+export function isAuthenticated() {
+  return !!localStorage.getItem("token");
 }

@@ -1,31 +1,173 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client/dist/sockjs";
+import { isAuthenticated, refreshTokenIfNeeded } from "../api/auth";
+import { WS_URL } from "../config";
 
 export let stompClient = null;
+let isConnecting = false;
+let navigationCallback = null;
 
-export const connectWebSocket = (onConnectCallback) => {
-  if (stompClient && stompClient.active) {
-    // Уже подключено
+export const setNavigationCallback = (callback) => {
+    navigationCallback = callback;
+};
+
+const isAuthPage = () => {
+    return window.location.pathname === '/auth';
+};
+
+const handleAuthRedirect = () => {
+    if (!isAuthPage() && navigationCallback) {
+        localStorage.clear();
+        navigationCallback();
+    }
+};
+
+const createSockJS = () => {
+    const token = localStorage.getItem("token");
+    if(localStorage.getItem("token") !== null && localStorage.getItem("refreshToken")!==null){
+    console.log("[SockJS] Creating connection with token:", token ? "present" : "missing");
+    const sock = new SockJS(`${WS_URL}?access_token=${encodeURIComponent(token)}`);
+    sock.onopen = () => {
+        console.log("[SockJS] Connection opened");
+    };
+    
+    sock.onerror = async (error) => {
+        console.error("[SockJS] Error:", error);
+        if (isConnecting) return;
+        
+        try {
+            const refreshed = await refreshTokenIfNeeded();
+            if (refreshed) {
+                const newToken = localStorage.getItem("token");
+                if (newToken) {
+                    disconnectWebSocket();
+                    await connectWebSocket();
+                }
+            } else {
+                handleAuthRedirect();
+            }
+        } catch (e) {
+            console.error("[SockJS] Error refreshing token:", e);
+            handleAuthRedirect();
+        }
+    };
+
+    return sock;
+  }
+};
+
+export const connectWebSocket = async (onConnectCallback) => {
+
+  if (isAuthPage()) {
+    console.log("[WebSocket] Skipping connection on auth page");
     return;
   }
-  const token = localStorage.getItem("token");
-  if (!token) return console.error("Нет токена!");
 
-  stompClient = new Client({
-    webSocketFactory: () => new SockJS(`http://193.233.113.180:8087/ws?access_token=${encodeURIComponent(token)}`),
-    connectHeaders: { Authorization: `Bearer ${token}` },
-    debug: (msg) => console.log("[STOMP]", msg),
-    reconnectDelay: 5000,
-    onConnect: () => {
-      console.log("✅ STOMP connected");
-      onConnectCallback && onConnectCallback();
-    },
-    onStompError: (frame) => {
-      console.error("STOMP ошибка:", frame.headers['message']);
-    },
-  });
+  if (stompClient && stompClient.active) {
+    console.log("[WebSocket] Already connected");
+    return;
+  }
 
-  stompClient.activate();
+  if (isConnecting) {
+    console.log("[WebSocket] Already connecting...");
+    return;
+  }
+
+  isConnecting = true;
+  console.log("[WebSocket] Starting connection...");
+
+  try {
+    // Проверяем токен и обновляем если нужно
+    if (!isAuthenticated()) {
+      const refreshed = await refreshTokenIfNeeded();
+      if (!refreshed) {
+        console.error("[WebSocket] Failed to get token!");
+        localStorage.clear();
+        handleAuthRedirect();
+        return;
+      }
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("[WebSocket] No token!");
+      handleAuthRedirect();
+      return;
+    }
+ 
+  
+    stompClient = new Client({
+      webSocketFactory: () => createSockJS(),
+      connectHeaders: { 
+        Authorization: `Bearer ${token}`
+      },
+      debug: (msg) => console.log("[STOMP]", msg),
+      reconnectDelay: 5000,
+      onConnect: () => {
+        console.log("[WebSocket] ✅ STOMP connected");
+        isConnecting = false;
+        onConnectCallback && onConnectCallback();
+      },
+      onStompError: async (frame) => {
+        console.error("[WebSocket] STOMP error:", frame.headers['message']);
+        if (frame.headers['message']?.includes('401') || frame.headers['message']?.includes('403')) {
+          try {
+            const refreshed = await refreshTokenIfNeeded();
+            if (refreshed) {
+              disconnectWebSocket();
+              await connectWebSocket(onConnectCallback);
+            } else {
+              handleAuthRedirect();
+            }
+          } catch (e) {
+            console.error("[WebSocket] Error refreshing token:", e);
+            handleAuthRedirect();
+          }
+        }
+      },
+      onWebSocketError: async (event) => {
+        console.error("[WebSocket] WebSocket error:", event);
+        if (isConnecting) return;
+        
+        try {
+          const refreshed = await refreshTokenIfNeeded();
+          if (refreshed) {
+            disconnectWebSocket();
+            await connectWebSocket(onConnectCallback);
+          } else {
+            handleAuthRedirect();
+          }
+        } catch (e) {
+          console.error("[WebSocket] Error refreshing token:", e);
+          handleAuthRedirect();
+        }
+      },
+      onWebSocketClose: async (event) => {
+        console.log("[WebSocket] WebSocket closed:", event);
+        
+        if (!event.wasClean) {
+          try {
+            const refreshed = await refreshTokenIfNeeded();
+            if (refreshed) {
+              await connectWebSocket(onConnectCallback);
+            } else {
+              handleAuthRedirect();
+            }
+          } catch (e) {
+            console.error("[WebSocket] Error refreshing token:", e);
+            handleAuthRedirect();
+          }
+        }
+      }
+    });
+
+    await stompClient.activate();
+  } catch (error) {
+    console.error("[WebSocket] Error connecting:", error);
+    isConnecting = false;
+    localStorage.clear();
+    handleAuthRedirect();
+  }
 };
 
 export const sendChatMessage = (toUser, message) => {
@@ -36,11 +178,15 @@ export const sendChatMessage = (toUser, message) => {
   });
 };
 
-export const requestChatHistory = (withUser) => {
+export const requestChatHistory = (friendUsername, page, pageSize = 50) => {
   if (!stompClient) return;
   stompClient.publish({
     destination: "/app/chat/history",
-    body: JSON.stringify({ withUser })
+    body: JSON.stringify({
+        withUser: friendUsername,
+        page,
+        pageSize
+    })
   });
 };
 
@@ -95,4 +241,5 @@ export const disconnectWebSocket = () => {
     stompClient.deactivate();
     stompClient = null;
   }
+  isConnecting = false;
 };

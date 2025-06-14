@@ -21,8 +21,8 @@ export const subscribeToTopics = ({
 
   stompClient.subscribe("/user/queue/chat/history", (message) => {
     const msg = JSON.parse(message.body);
-    console.log(msg)
-    onChatHistory && onChatHistory(msg.messages);
+    console.log('[WS] chat history received:', msg);
+    onChatHistory && onChatHistory(msg);
   });
 
   stompClient.subscribe("/user/queue/presence", (message) => {

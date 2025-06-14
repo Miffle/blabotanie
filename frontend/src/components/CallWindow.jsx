@@ -5,11 +5,6 @@ const iceServers = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
     { urls: "stun:stun1.l.google.com:19302" },
-    // {
-    //   urls: "turn:193.233.113.180:3579",
-    //   username: "blabotanie",
-    //   credential: "blabotanie"
-    // },
     {
       urls: "turn:193.233.113.180:3579",
       username: "blabotanie",
@@ -110,8 +105,11 @@ console.log('Треки:', stream.getAudioTracks());
         } else {
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
-          sendCallOffer(myUsername, friendUsername, offer.sdp, new Date().toISOString());
+          const startTime = new Date().toISOString();
+          sendCallOffer(myUsername, friendUsername, offer.sdp, startTime);
           setStatus("Ожидание ответа...");
+          callStartTime.current = new Date(startTime);
+          startTimer();
         }
       } catch (err) {
         console.error("Ошибка доступа к микрофону:", err);
@@ -140,8 +138,6 @@ console.log('Треки:', stream.getAudioTracks());
         }
         pendingCandidatesRef.current = [];
         setStatus("Звонок активен");
-        callStartTime.current = new Date();
-        startTimer();
       })();
       setCallAnswer(null);
     }
