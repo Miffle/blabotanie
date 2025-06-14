@@ -4,7 +4,17 @@ import { useWebSocket } from "../context/WebSocketContext";
 const iceServers = {
   iceServers: [
     { urls: "stun:stun.l.google.com:19302" },
-    { urls: "stun:stun1.l.google.com:19302" }
+    { urls: "stun:stun1.l.google.com:19302" },
+    // {
+    //   urls: "turn:193.233.113.180:3579",
+    //   username: "blabotanie",
+    //   credential: "blabotanie"
+    // },
+    {
+      urls: "turn:193.233.113.180:3579",
+      username: "blabotanie",
+      credential: "blabotanieClient"
+    }
   ]
 };
 
@@ -49,13 +59,18 @@ export default function CallWindow({ activeCall, onEnd, mini = false }) {
     const start = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log('Получен localStream:', stream);
+console.log('Треки:', stream.getAudioTracks());
         if (!isMounted) return;
         setLocalStream(stream);
         if (localAudioRef.current) localAudioRef.current.srcObject = stream;
 
         const pc = new RTCPeerConnection(iceServers);
         peerConnectionRef.current = pc;
-        stream.getTracks().forEach(track => pc.addTrack(track, stream));
+        stream.getTracks().forEach(track => {
+          console.log('Добавляю трек в peerConnection:', track);
+          pc.addTrack(track, stream);
+        });
 
         pc.onicecandidate = (event) => {
           if (event.candidate) {
@@ -72,18 +87,12 @@ export default function CallWindow({ activeCall, onEnd, mini = false }) {
         };
 
         pc.ontrack = (event) => {
-          setRemoteStream(prev => {
-            let streamToUse = prev;
-            if (!prev) {
-              streamToUse = new MediaStream();
-            }
-            streamToUse.addTrack(event.track);
-            if (remoteAudioRef.current) {
-              remoteAudioRef.current.srcObject = streamToUse;
-              remoteAudioRef.current.muted = false;
-            }
-            return streamToUse;
-          });
+          const [stream] = event.streams;
+          if (stream && remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = stream;
+            remoteAudioRef.current.muted = false;
+            setRemoteStream(stream);
+          }
         };
 
         if (isIncoming) {
@@ -251,6 +260,18 @@ export default function CallWindow({ activeCall, onEnd, mini = false }) {
       localAudioRef.current.srcObject = localStream;
     }
   }, [localStream]);
+
+  useEffect(() => {
+    if (localStream) {
+      window._debugLocalStream = localStream;
+    }
+  }, [localStream]);
+
+  useEffect(() => {
+    if (remoteStream) {
+      window._debugRemoteStream = remoteStream;
+    }
+  }, [remoteStream]);
 
   return (
     <div className={mini ? "mini-call-main-block" : "call-main-block"}>
