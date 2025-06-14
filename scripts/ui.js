@@ -1,7 +1,6 @@
-
 const sounds = {
-    incoming: new Audio("resources/sounds/call.mp3"),
-    newMessage: new Audio("resources/sounds/newMessage.mp3")
+    incoming: new Audio("sounds/incoming-call.mp3"),
+    newMessage: new Audio("sounds/incoming-message.mp3")
     //    end: new Audio("assets/sounds/end-call.mp3")
 };
 let callStartTime = null;

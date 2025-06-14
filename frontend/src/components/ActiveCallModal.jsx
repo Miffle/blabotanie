@@ -109,8 +109,11 @@ export default function ActiveCallModal({
         } else {
           const offer = await pc.createOffer();
           await pc.setLocalDescription(offer);
-          sendCallOffer(myUsername, friendUsername, offer.sdp, new Date().toISOString());
+          const startTime = new Date().toISOString();
+          sendCallOffer(myUsername, friendUsername, offer.sdp, startTime);
           setStatus("Ожидание ответа...");
+          callStartTime.current = new Date(startTime);
+          startTimer();
         }
       } catch (err) {
         console.error("Ошибка доступа к микрофону:", err);
@@ -141,8 +144,6 @@ export default function ActiveCallModal({
         }
         pendingCandidatesRef.current = [];
         setStatus("Звонок активен");
-        callStartTime.current = new Date();
-        startTimer();
       })();
       setCallAnswer(null);
     }

@@ -18,6 +18,9 @@
   background: #f3f6ff;
   border-bottom: 1px solid #e0e7ff;
 }
+.scroll-button::after {
+  content: "↓";
+}
 .chat-messages {
   flex: 1 1 0;
   padding: 18px 24px;
@@ -97,4 +100,35 @@
   font-size: 0.85em;
   color: #a0aec0;
   margin-left: 8px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.pagination-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: #666;
 } 

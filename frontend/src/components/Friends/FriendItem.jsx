@@ -1,7 +1,18 @@
 // components/FriendItem.jsx
 import React from "react";
+import { useWebSocket } from "../../context/WebSocketContext";
 
 export default function FriendItem({ friend, onRemove, onSelect, selected, onCall }) {
+  const { playOutgoingCall } = useWebSocket();
+
+  const handleCall = (e) => {
+    e.stopPropagation();
+    if (friend.online && onCall) {
+      playOutgoingCall();
+      onCall();
+    }
+  };
+
   return (
     <div className={`friend-item${selected ? " selected" : ""}`} key={friend.friendId} onClick={onSelect}>
       <span>
@@ -12,10 +23,7 @@ export default function FriendItem({ friend, onRemove, onSelect, selected, onCal
         <button
           title="Звонок"
           disabled={!friend.online}
-          onClick={e => {
-            e.stopPropagation();
-            if (friend.online && onCall) onCall();
-          }}
+          onClick={handleCall}
         >
           <i className="fas fa-phone" />
         </button>

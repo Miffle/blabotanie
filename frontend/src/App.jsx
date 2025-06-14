@@ -8,21 +8,20 @@ import CallPage from "./pages/CallPage";
 import HomePage from "./pages/HomePage";
 import { WebSocketProvider } from "./context/WebSocketContext";
 import RequireAuth from "./components/RequireAuth";
-
-
+import NavigationInitializer from "./components/NavigationInitializer";
 
 export default function App() {
-
   return (
     <WebSocketProvider>
       <HashRouter>
+        <NavigationInitializer />
         <Routes>
           <Route path="/auth" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
           <Route path="/" element={
             <RequireAuth>
-            <MainLayout />
+              <MainLayout />
             </RequireAuth>
           }>
             <Route index element={<RequireAuth><HomePage /></RequireAuth>} />
@@ -34,14 +33,16 @@ export default function App() {
             <Route path="/calls" element={
               <RequireAuth> 
                 <CallsPage />
-                </RequireAuth>
+              </RequireAuth>
             } />
-            <Route path="/call" element={<RequireAuth>
-              <CallPage />
-              </RequireAuth>} />
+            <Route path="/call" element={
+              <RequireAuth>
+                <CallPage />
+              </RequireAuth>
+            } />
           </Route>
         </Routes>
       </HashRouter>
-    </WebSocketProvider >
+    </WebSocketProvider>
   );
 }
