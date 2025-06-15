@@ -28,7 +28,9 @@ export default function ActiveCallModal({
     callReject,
     setCallAnswer,
     setIceCandidate,
-    resetCallState
+    resetCallState,
+    stopOutgoingCall,
+    playOutgoingCall
   } = useWebSocket();
 
   // Аналоги глобальных переменных
@@ -114,6 +116,7 @@ export default function ActiveCallModal({
           setStatus("Ожидание ответа...");
           callStartTime.current = new Date(startTime);
           startTimer();
+          playOutgoingCall();
         }
       } catch (err) {
         console.error("Ошибка доступа к микрофону:", err);
@@ -185,6 +188,9 @@ export default function ActiveCallModal({
   }, [callEnd, callReject, open]);
 
   function cleanup() {
+    if (!incoming) {
+      stopOutgoingCall();
+    }
     if (peerConnectionRef.current) {
       peerConnectionRef.current.onicecandidate = null;
       peerConnectionRef.current.ontrack = null;
@@ -208,6 +214,7 @@ export default function ActiveCallModal({
   }
 
   function handleEndCall() {
+    stopOutgoingCall()
     const myUsername = localStorage.getItem("username");
     sendCallEnd(friendUsername, myUsername);
     cleanup();
