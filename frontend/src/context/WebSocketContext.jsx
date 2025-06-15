@@ -34,6 +34,8 @@ export const WebSocketProvider = ({ children }) => {
   const outgoingCallSound = useRef(new Audio('sounds/outgoing-call.mp3'));
   const incomingMessageSound = useRef(new Audio('sounds/incoming-message.mp3'));
   const incomingCallSound = useRef(new Audio('sounds/incoming-call.mp3'));
+  const isPlayingIncomingCall = useRef(false);
+  const isPlayingOutgoingCall = useRef(false);
 
   // Настройка звуков
   useEffect(() => {
@@ -115,11 +117,22 @@ export const WebSocketProvider = ({ children }) => {
           // Воспроизводим звук входящего сообщения только если:
           // 1. Сообщение не от текущего пользователя
           // 2. Чат с отправителем не открыт или приложение не видимо
+          const currentUsername = localStorage.getItem("username");
           if (
-            msg.fromUser !== localStorage.getItem("username") &&
+            msg.fromUser !== currentUsername &&
             (msg.fromUser !== currentChatRef.current || !isAppVisible)
           ){
-            incomingMessageSound.current.play();
+            console.log('[Audio] Playing incoming message sound for message from:', msg.fromUser);
+            incomingMessageSound.current.play().catch(err => {
+              console.error('[Audio] Error playing incoming message sound:', err);
+            });
+          } else {
+            console.log('[Audio] Skipping incoming message sound:', {
+              fromUser: msg.fromUser,
+              currentUsername,
+              currentChat: currentChatRef.current,
+              isAppVisible
+            });
           }
         },
         onChatHistory: (response) => {
@@ -141,38 +154,12 @@ export const WebSocketProvider = ({ children }) => {
         onCallOffer: (data) => { 
           console.log('[WS] call offer', data); 
           setCallOffer(data);
-          // Воспроизводим звук входящего звонка
-          console.log('[Audio] Attempting to play incoming call sound');
-          incomingCallSound.current.currentTime = 0;
-          incomingCallSound.current.volume = 1.0; // Устанавливаем максимальную громкость
-          incomingCallSound.current.muted = false; // Убеждаемся, что звук не отключен
-          incomingCallSound.current.play()
-            .then(() => {
-              console.log('[Audio] Incoming call sound started successfully');
-              console.log('[Audio] Sound state:', {
-                volume: incomingCallSound.current.volume,
-                muted: incomingCallSound.current.muted,
-                paused: incomingCallSound.current.paused,
-                currentTime: incomingCallSound.current.currentTime
-              });
-            })
-            .catch(err => {
-              console.error('[Audio] Error playing incoming call sound:', err);
-              console.log('[Audio] Sound element state:', {
-                readyState: incomingCallSound.current.readyState,
-                error: incomingCallSound.current.error,
-                src: incomingCallSound.current.src,
-                volume: incomingCallSound.current.volume,
-                muted: incomingCallSound.current.muted
-              });
-            });
+          playIncomingCall();
         },
         onCallAnswer: (data) => { 
           console.log('[WS] call answer', data); 
           setCallAnswer(data);
-          // Останавливаем звук исходящего звонка
-          outgoingCallSound.current.pause();
-          outgoingCallSound.current.currentTime = 0;
+          stopOutgoingCall();
         },
         onIceCandidate: (data) => { 
           console.log('[WS] ice candidate', data); 
@@ -182,21 +169,15 @@ export const WebSocketProvider = ({ children }) => {
           console.log('[WS] call end');
           setCallEnd(true);
           setActiveCall(null);
-          // Останавливаем все звуки звонков
-          outgoingCallSound.current.pause();
-          outgoingCallSound.current.currentTime = 0;
-          incomingCallSound.current.pause();
-          incomingCallSound.current.currentTime = 0;
+          stopOutgoingCall();
+          stopIncomingCall();
         },
         onCallReject: () => {
           console.log('[WS] call reject');
           setCallReject(true);
           setActiveCall(null);
-          // Останавливаем все звуки звонков
-          outgoingCallSound.current.pause();
-          outgoingCallSound.current.currentTime = 0;
-          incomingCallSound.current.pause();
-          incomingCallSound.current.currentTime = 0;
+          stopOutgoingCall();
+          stopIncomingCall();
         }
       });
     });
@@ -213,17 +194,115 @@ export const WebSocketProvider = ({ children }) => {
 
   // Функции для управления звуками
   const playOutgoingCall = () => {
-    outgoingCallSound.current.play();
+    console.log('[Audio] Attempting to play outgoing call sound');
+    console.log('[Audio] Sound state before play:', {
+      readyState: outgoingCallSound.current.readyState,
+      error: outgoingCallSound.current.error,
+      duration: outgoingCallSound.current.duration,
+      volume: outgoingCallSound.current.volume,
+      muted: outgoingCallSound.current.muted,
+      src: outgoingCallSound.current.src
+    });
+
+    if (!isPlayingOutgoingCall.current) {
+      isPlayingOutgoingCall.current = true;
+      outgoingCallSound.current.currentTime = 0;
+      outgoingCallSound.current.volume = 1.0;
+      outgoingCallSound.current.muted = false;
+      outgoingCallSound.current.loop = true;
+      outgoingCallSound.current.play()
+        .then(() => {
+          console.log('[Audio] Outgoing call sound started successfully');
+          console.log('[Audio] Sound state after play:', {
+            readyState: outgoingCallSound.current.readyState,
+            error: outgoingCallSound.current.error,
+            duration: outgoingCallSound.current.duration,
+            volume: outgoingCallSound.current.volume,
+            muted: outgoingCallSound.current.muted
+          });
+        })
+        .catch(err => {
+          console.error('[Audio] Error playing outgoing call sound:', err);
+          console.log('[Audio] Sound state after error:', {
+            readyState: outgoingCallSound.current.readyState,
+            error: outgoingCallSound.current.error,
+            duration: outgoingCallSound.current.duration,
+            volume: outgoingCallSound.current.volume,
+            muted: outgoingCallSound.current.muted
+          });
+          isPlayingOutgoingCall.current = false;
+        });
+    } else {
+      console.log('[Audio] Outgoing call sound is already playing');
+    }
   };
 
   const stopOutgoingCall = () => {
-    outgoingCallSound.current.pause();
-    outgoingCallSound.current.currentTime = 0;
+    console.log('[Audio] Attempting to stop outgoing call sound');
+    if (isPlayingOutgoingCall.current) {
+      outgoingCallSound.current.pause();
+      outgoingCallSound.current.currentTime = 0;
+      isPlayingOutgoingCall.current = false;
+      console.log('[Audio] Outgoing call sound stopped successfully');
+    } else {
+      console.log('[Audio] Outgoing call sound is not playing');
+    }
+  };
+
+  const playIncomingCall = () => {
+    console.log('[Audio] Attempting to play incoming call sound');
+    console.log('[Audio] Sound state before play:', {
+      readyState: incomingCallSound.current.readyState,
+      error: incomingCallSound.current.error,
+      duration: incomingCallSound.current.duration,
+      volume: incomingCallSound.current.volume,
+      muted: incomingCallSound.current.muted,
+      src: incomingCallSound.current.src
+    });
+
+    if (!isPlayingIncomingCall.current) {
+      isPlayingIncomingCall.current = true;
+      incomingCallSound.current.currentTime = 0;
+      incomingCallSound.current.volume = 1.0;
+      incomingCallSound.current.muted = false;
+      incomingCallSound.current.loop = true;
+      incomingCallSound.current.play()
+        .then(() => {
+          console.log('[Audio] Incoming call sound started successfully');
+          console.log('[Audio] Sound state after play:', {
+            readyState: incomingCallSound.current.readyState,
+            error: incomingCallSound.current.error,
+            duration: incomingCallSound.current.duration,
+            volume: incomingCallSound.current.volume,
+            muted: incomingCallSound.current.muted
+          });
+        })
+        .catch(err => {
+          console.error('[Audio] Error playing incoming call sound:', err);
+          console.log('[Audio] Sound state after error:', {
+            readyState: incomingCallSound.current.readyState,
+            error: incomingCallSound.current.error,
+            duration: incomingCallSound.current.duration,
+            volume: incomingCallSound.current.volume,
+            muted: incomingCallSound.current.muted
+          });
+          isPlayingIncomingCall.current = false;
+        });
+    } else {
+      console.log('[Audio] Sound is already playing');
+    }
   };
 
   const stopIncomingCall = () => {
-    incomingCallSound.current.pause();
-    incomingCallSound.current.currentTime = 0;
+    console.log('[Audio] Attempting to stop incoming call sound');
+    if (isPlayingIncomingCall.current) {
+      incomingCallSound.current.pause();
+      incomingCallSound.current.currentTime = 0;
+      isPlayingIncomingCall.current = false;
+      console.log('[Audio] Incoming call sound stopped successfully');
+    } else {
+      console.log('[Audio] Sound is not playing');
+    }
   };
 
   return (
@@ -264,6 +343,7 @@ export const WebSocketProvider = ({ children }) => {
       playOutgoingCall,
       stopOutgoingCall,
       stopIncomingCall,
+      playIncomingCall,
       incomingCallSound
     }}>
       {children}

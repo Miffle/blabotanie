@@ -2,30 +2,24 @@ import React, { useEffect } from "react";
 import { useWebSocket } from "../context/WebSocketContext";
 
 export default function IncomingCallInviteModal({ open, caller, onAccept, onReject }) {
-  const { stopIncomingCall, incomingCallSound } = useWebSocket();
+  const { stopIncomingCall, playIncomingCall } = useWebSocket();
 
   useEffect(() => {
     if (open) {
-      // Воспроизводим звук входящего звонка
-      incomingCallSound.current.currentTime = 0;
-      incomingCallSound.current.volume = 1.0;
-      incomingCallSound.current.muted = false;
-      incomingCallSound.current.loop = true;
-      incomingCallSound.current.play().catch(err => {
-        console.error('[Audio] Error playing incoming call sound:', err);
-      });
-    } else {
-      stopIncomingCall();
+      playIncomingCall();
     }
-  }, [open, stopIncomingCall, incomingCallSound]);
+    return () => {
+      if (open) {
+        stopIncomingCall();
+      }
+    };
+  }, [open, stopIncomingCall, playIncomingCall]);
 
   const handleAccept = () => {
-    stopIncomingCall();
     onAccept();
   };
 
   const handleReject = () => {
-    stopIncomingCall();
     onReject();
   };
 

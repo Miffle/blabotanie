@@ -6,7 +6,7 @@ import "../styles/call-page.css";
 import { useNavigate } from "react-router-dom";
 
 export default function CallPage() {
-  const { activeCall, setActiveCall, setCallOffer } = useWebSocket();
+  const { activeCall, setActiveCall, setCallOffer, stopOutgoingCall } = useWebSocket();
   const navigate = useNavigate();
   const firstRender = useRef(true);
 
@@ -32,6 +32,7 @@ export default function CallPage() {
         onEnd={() => {
           setActiveCall(null);
           setCallOffer(null);
+          stopOutgoingCall();
           navigate("/");
         }}
       />

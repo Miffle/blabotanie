@@ -34,24 +34,10 @@ export default function Chat({ friend }) {
       (msg.fromUser === friend?.friendUsername || msg.toUser === friend?.friendUsername)
   );
 
-  const liveMessages = chatMessages.filter(
-    msg =>
-      (msg.fromUser === friend?.friendUsername || msg.toUser === friend?.friendUsername)
-  );
+ const liveMessages = chatMessages;
 
-  // Функция для дедупликации сообщений
-  const deduplicateMessages = (messages) => {
-    const seen = new Set();
-    return messages.filter(msg => {
-      const sentAtKey = Array.isArray(msg.sentAt) ? msg.sentAt.join('-') : 'no-date';
-      const key = `${msg.fromUser}-${msg.toUser}-${msg.message}-${sentAtKey}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  };
-
-  const allMessages = deduplicateMessages([...historyMessages, ...liveMessages]);
+  // Объединяем сообщения без дедупликации
+  const allMessages = [...historyMessages, ...liveMessages];
 
   useEffect(() => {
     if (friend && friend.friendUsername) {
@@ -113,7 +99,6 @@ export default function Chat({ friend }) {
   const handleSend = (e) => {
     e.preventDefault();
     if (!input.trim() || !friend) return;
-
     sendChatMessage(friend.friendUsername, input.trim());
     setInput("");
   };
