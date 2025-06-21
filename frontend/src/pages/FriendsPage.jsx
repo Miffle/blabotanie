@@ -130,11 +130,11 @@ export default function FriendsPage() {
               emptyMessage="Нет друзей"
               renderItem={(f) => (
                 <FriendItem
-                  key={f.friendId}
+                  key={f.friendUuid}
                   friend={f}
-                  onRemove={() => handleRemove(f.friendId)}
+                  onRemove={() => handleRemove(f.friendUuid)}
                   onSelect={() => setSelectedFriend(f)}
-                  selected={selectedFriend && selectedFriend.friendId === f.friendId}
+                  selected={selectedFriend && selectedFriend.friendUuid === f.friendUuid}
                   onCall={() => {
                     if (!activeCall && !callOffer) {
                       setActiveCall({

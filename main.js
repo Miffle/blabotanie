@@ -9,7 +9,7 @@ let mainWindow;
 let deeplinkUrl = null;
 let appIsQuitting = false; // Лучше использовать отдельную переменную для отслеживания состояния
 app.setAppUserModelId("com.blabotanie.app"); // должен совпадать с appId из build
-
+Menu.setApplicationMenu(null);
 let tray = null;
 
 if (process.defaultApp) {
@@ -50,7 +50,7 @@ app.whenReady().then(() => {
     createWindow(); // сначала создать окно
     // Инициализация трея должна быть после создания окна
     tray = new Tray(path.join(__dirname, 'resources/icon/icon256.ico'));
-
+    const settings = app.getLoginItemSettings();
     const contextMenu = Menu.buildFromTemplate([
         {
             label: 'Открыть',
@@ -60,6 +60,20 @@ app.whenReady().then(() => {
                     mainWindow.focus();
                 }
             }
+        },
+        {
+            label: 'Запускать при старте системы',
+            type: 'checkbox',
+            checked: settings.openAtLogin,
+            click: (menuItem) => {
+                app.setLoginItemSettings({
+                    openAtLogin: menuItem.checked,
+                    path: process.execPath
+                });
+            }
+        },
+        {
+            type: 'separator'
         },
         {
             label: 'Выход',
@@ -111,14 +125,6 @@ app.whenReady().then(() => {
         appIsQuitting = true;
         autoUpdater.quitAndInstall();
     });
-    const settings = app.getLoginItemSettings();
-    // автозапуск
-    if (!settings.openAtLogin) {
-        app.setLoginItemSettings({
-            openAtLogin: true,
-            path: process.execPath,
-        });
-    }
     if (!gotTheLock) {
         app.quit();
     } else {

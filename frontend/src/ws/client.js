@@ -170,20 +170,29 @@ export const connectWebSocket = async (onConnectCallback) => {
   }
 };
 
-export const sendChatMessage = (toUser, message) => {
+export const sendChatMessage = (friendUsername, friendUuid, message) => {
   if (!stompClient) return;
+  var fromUserUsername = localStorage.getItem("username");
+  var fromUserUuid= localStorage.getItem("uuid")
   stompClient.publish({
     destination: "/app/chat/message",
-    body: JSON.stringify({ toUser, message })
+    body: JSON.stringify({
+      fromUserUuid: fromUserUuid,
+fromUserUsername: fromUserUsername,
+toUserUuid: friendUuid,
+toUserUsername: friendUsername,
+       message 
+      })
   });
 };
 
-export const requestChatHistory = (friendUsername, page, pageSize = 50) => {
+export const requestChatHistory = (friendUuid,friendUsername, page, pageSize = 50) => {
   if (!stompClient) return;
   stompClient.publish({
     destination: "/app/chat/history",
     body: JSON.stringify({
-        withUser: friendUsername,
+      withUserUuid: friendUuid,
+      withUserUsername: friendUsername,
         page,
         pageSize
     })

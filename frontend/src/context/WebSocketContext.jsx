@@ -82,30 +82,30 @@ export const WebSocketProvider = ({ children }) => {
     currentChatRef.current = currentChat;
   }, [currentChat]);
   // Отслеживание состояния приложения через Electron
-  useEffect(() => {
-    const { BrowserWindow } = window.require('@electron/remote');
-    const mainWindow = BrowserWindow.getFocusedWindow();
+  // useEffect(() => {
+  //   const { BrowserWindow } = window.require('@electron/remote');
+  //   const mainWindow = BrowserWindow.getFocusedWindow();
 
-    const handleShow = () => setIsAppVisible(true);
-    const handleHide = () => setIsAppVisible(false);
-    const handleMinimize = () => setIsAppVisible(false);
-    const handleRestore = () => setIsAppVisible(true);
+  //   const handleShow = () => setIsAppVisible(true);
+  //   const handleHide = () => setIsAppVisible(false);
+  //   const handleMinimize = () => setIsAppVisible(false);
+  //   const handleRestore = () => setIsAppVisible(true);
 
-    mainWindow.on('show', handleShow);
-    mainWindow.on('hide', handleHide);
-    mainWindow.on('minimize', handleMinimize);
-    mainWindow.on('restore', handleRestore);
+  //   mainWindow.on('show', handleShow);
+  //   mainWindow.on('hide', handleHide);
+  //   mainWindow.on('minimize', handleMinimize);
+  //   mainWindow.on('restore', handleRestore);
 
-    // Проверяем начальное состояние
-    setIsAppVisible(!mainWindow.isMinimized());
+  //   // Проверяем начальное состояние
+  //   setIsAppVisible(!mainWindow.isMinimized());
 
-    return () => {
-      mainWindow.removeListener('show', handleShow);
-      mainWindow.removeListener('hide', handleHide);
-      mainWindow.removeListener('minimize', handleMinimize);
-      mainWindow.removeListener('restore', handleRestore);
-    };
-  }, []);
+  //   return () => {
+  //     mainWindow.removeListener('show', handleShow);
+  //     mainWindow.removeListener('hide', handleHide);
+  //     mainWindow.removeListener('minimize', handleMinimize);
+  //     mainWindow.removeListener('restore', handleRestore);
+  //   };
+  // }, []);
 
   useEffect(() => {
     connectWebSocket(() => {
