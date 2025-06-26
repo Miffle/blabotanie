@@ -1,0 +1,67 @@
+{
+  "mainPage": {
+    "guest": "Гость",
+    "hi": "Привет, {{username}}.",
+    "whereAreYou": "Вы находитесь в приватном пространстве общения",
+    "whatNext": "Что дальше?",
+    "chooseFriend": "Выберите друга и начните чат или звонок",
+    "addFriend": "Добавьте друзей через поиск",
+    "notificationAboutRequests": "Уведомления о новых заявках приходят автоматически",
+    "dataSecured": "Все данные защищены и видны только вам и вашим друзьям"
+  },
+  "settings": {
+    "title": "Настройки",
+    "language": "Язык приложения"
+  },
+  "header": {
+    "main": "Главная",
+    "friends": "Друзья",
+    "calls": "Звонки",
+    "profile": "Профиль",
+    "settings": "Настройки",
+    "logout": "Выйти"
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "passwordConfirmation": "Пароль",
+    "loginButton": "Войти",
+    "registerButton": "Зарегистрироваться",
+    "back": "Назад"
+  },
+  "chat": {
+    "placeholder": "Введите сообщение...",
+    "back": "Назад"
+  },
+  "callsHistory": {
+    "header": "История звонков",
+    "outgoing": "Исходящий",
+    "incoming": "Входящий",
+    "ended": "Завершён",
+    "declined": "Отклонён",
+    "inProcess": "В процессе",
+    "cancelled": "Пропущен",
+    "back": "Назад",
+    "next": "Вперед"
+  },
+  "pagination": {
+    "info": "Страница {{current}} из {{total}}"
+  },
+  "friendsPage": {
+    "placeholder": "Имя пользователя...",
+    "showRequests": "Заявки в друзья",
+    "hideRequests": "Скрыть заявки",
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "cancel": "Отменить",
+    "call": "Позвонить",
+    "delete": "Удалить"
+  },
+  "profile": {
+    "editUsername": "Редактировать",
+    "save": "Сохранить",
+    "cancel": "Отмена"
+  }
+}
