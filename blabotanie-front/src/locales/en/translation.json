@@ -11,7 +11,10 @@
   },
   "settings": {
     "title": "Settings",
-    "language": "App language"
+    "language": "App language",
+    "microphone": "Microphone:",
+    "headphones": "Headphones:",
+    "autoClosingPanel": "Auto-hide the navigation bar:"
   },
   "header": {
     "main": "Main",

@@ -8,7 +8,7 @@ import {useTranslation} from "react-i18next";
 
 export default function ActiveCallPage() {
     const {
-        activeCall, setActiveCall, setMinimized, setMicEnabled, micEnabled,
+        activeCall, setActiveCall, setMicEnabled, micEnabled,
         setAudioEnabled,
         audioEnabled
     } = useCall();
@@ -19,18 +19,17 @@ export default function ActiveCallPage() {
     if (!activeCall) {
         return <div>Нет активного звонка</div>;
     }
-
+    let recipientUuid: string;
+    let recipientUsername: string;
+    if (activeCall.calledUsername === localStorage.getItem("username")) {
+        recipientUuid = activeCall.initiatorUuid;
+        recipientUsername = activeCall.initiatorUsername;
+    } else {
+        recipientUuid = activeCall.calledUuid;
+        recipientUsername = activeCall.calledUsername;
+    }
     const handleEndCall = () => {
         if (!activeCall) return;
-        let recipientUuid: string;
-        let recipientUsername: string;
-        if (activeCall.calledUsername === localStorage.getItem("username")) {
-            recipientUuid = activeCall.initiatorUuid;
-            recipientUsername = activeCall.initiatorUsername;
-        } else {
-            recipientUuid = activeCall.calledUuid;
-            recipientUsername = activeCall.calledUsername;
-        }
         const payload: EndCall = {
             recipientUuid,
             recipientUsername
@@ -40,16 +39,11 @@ export default function ActiveCallPage() {
         navigate('/');
     };
 
-    const handleMinimize = () => {
-        setMinimized(true);
-        navigate('/');
-    };
-
     return (
         <div className="active-call-page">
-            <h2>Звонок с {activeCall.calledUsername || activeCall.initiatorUsername}</h2>
+            <h2>Звонок с {recipientUsername}</h2>
             <div className="avatar-circle">
-                {(activeCall.calledUsername || activeCall.initiatorUsername)[0]?.toUpperCase()}
+                {recipientUsername[0]?.toUpperCase()}
             </div>
 
             <div className="call-status">{t("call.callContinues")}</div>
@@ -60,7 +54,6 @@ export default function ActiveCallPage() {
                 <button onClick={() => setAudioEnabled(prev => !prev)}>
                     {audioEnabled ? t("call.audioOn") : t("call.audioOff")}
                 </button>
-                <button onClick={handleMinimize}>{t("call.minimize")}</button>
                 <button onClick={handleEndCall}>{t("call.HangUp")}</button>
             </div>
         </div>

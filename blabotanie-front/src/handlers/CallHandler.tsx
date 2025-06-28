@@ -2,9 +2,10 @@
 import React, {useEffect, useRef} from 'react';
 import {useCall} from '../context/CallContext';
 import {useWebSocket} from '../context/WebSocketContext';
-import {Answer, IceCandidate, Offer, EndCall} from '../dto/CallDTO';
+import {Answer, EndCall, IceCandidate, Offer} from '../dto/CallDTO';
 import {WebSocketEventsRouter} from '../services/WebSocketEventsRouter';
 import {useNavigate} from "react-router-dom";
+import {useAudioDevices} from '../context/AudioDeviceContext';
 
 const iceServers = {
     iceServers: [
@@ -20,15 +21,17 @@ const iceServers = {
 export default function CallHandler() {
     const {
         activeCall,
-        setActiveCall,
         endCall,
         micEnabled,
         audioEnabled,
         playOutgoingCallSound,
         stopOutgoingCallSound,
-        playIncomingCallSound,
         stopIncomingCallSound
     } = useCall();
+    const {
+        selectedInputId,
+        selectedOutputId,
+    } = useAudioDevices();
     const {send} = useWebSocket();
     const navigate = useNavigate();
     const pcRef = useRef<RTCPeerConnection | null>(null);
@@ -39,10 +42,6 @@ export default function CallHandler() {
     const uuid = localStorage.getItem('uuid')!;
     const isIncoming = activeCall?.initiatorUuid !== uuid;
 
-
-    const friendUuid = isIncoming
-        ? activeCall?.initiatorUuid
-        : activeCall?.calledUuid;
     useEffect(() => {
         localStreamRef.current?.getAudioTracks().forEach(track => {
             track.enabled = micEnabled;
@@ -69,8 +68,13 @@ export default function CallHandler() {
         const pc = new RTCPeerConnection(iceServers);
         pcRef.current = pc;
 
-        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+        const stream = await navigator.mediaDevices.getUserMedia({audio: selectedInputId ? {deviceId: {exact: selectedInputId}} : true});
         localStreamRef.current = stream;
+        if (remoteAudioRef.current && 'setSinkId' in remoteAudioRef.current && selectedOutputId) {
+            (remoteAudioRef.current as any).setSinkId(selectedOutputId).catch(err => {
+                console.warn("Не удалось установить sinkId:", err);
+            });
+        }
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         pc.onicecandidate = (event) => {
@@ -125,6 +129,35 @@ export default function CallHandler() {
             send('/app/call/offer', payload);
         }
     };
+    useEffect(() => {
+        if (!pcRef.current || !selectedInputId) return;
+
+        const updateInputDevice = async () => {
+            const newStream = await navigator.mediaDevices.getUserMedia({
+                audio: { deviceId: { exact: selectedInputId } }
+            });
+
+            // @ts-ignore
+            const sender = pcRef.current.getSenders().find(s => s.track?.kind === 'audio');
+            if (sender) {
+                const [newTrack] = newStream.getAudioTracks();
+                sender.replaceTrack(newTrack);
+            }
+
+            // Остановим старые треки
+            localStreamRef.current?.getTracks().forEach(t => t.stop());
+            localStreamRef.current = newStream;
+        };
+
+        updateInputDevice().catch(console.error);
+    }, [selectedInputId]);
+    useEffect(() => {
+        if (remoteAudioRef.current && 'setSinkId' in remoteAudioRef.current && selectedOutputId) {
+            (remoteAudioRef.current as any).setSinkId(selectedOutputId).catch(err => {
+                console.warn("Не удалось установить sinkId:", err);
+            });
+        }
+    }, [selectedOutputId]);
 
     useEffect(() => {
         // WebSocketEventsRouter.setIncomingCallHandler(() => {});

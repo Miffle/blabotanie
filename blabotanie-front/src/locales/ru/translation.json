@@ -11,7 +11,11 @@
   },
   "settings": {
     "title": "Настройки",
-    "language": "Язык приложения"
+    "language": "Язык приложения",
+    "microphone": "Микрофон:",
+    "headphones": "Наушники:",
+    "autoClosingPanel": "Автоскрытие панели навигации:"
+
   },
   "header": {
     "main": "Главная",
