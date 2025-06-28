@@ -9,15 +9,12 @@ export default defineConfig({
   plugins: [react()],
   base: './',
   build: {
-    outDir: '../dist2-frontend',
+    outDir: '../compiled-frontend',
     emptyOutDir: true,
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
-  },
-  assetsInclude: ['**/*.mp3',
-    '**/**/*.mp3'
-  ],
+  }
 });

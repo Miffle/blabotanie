@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, {JSX} from 'react';
-import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
+import {HashRouter, Routes, Route, Navigate} from 'react-router-dom';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 // @ts-ignore
@@ -19,6 +19,7 @@ import IncomingCallModal from './components/IncomingCallModal';
 import CallHandler from "./handlers/CallHandler";
 import MinimizedCallWindow from "./components/MinimizedCallWindow";
 import './styles/call-ui.css';
+import './styles/App.css';
 
 const ProtectedRoute = ({children}: { children: JSX.Element }) => {
     const {isAuthenticated, initialized} = useAuth();
@@ -32,7 +33,7 @@ export default function App() {
         <AuthProvider>
             <WebSocketProvider>
                 <CallProvider>
-                    <BrowserRouter>
+                    <HashRouter>
                         <CallHandler/>
                         <IncomingCallModal/>
                         <MinimizedCallWindow />
@@ -43,7 +44,7 @@ export default function App() {
                             <Route
                                 path="/"
                                 element={
-                                    <ProtectedRoute children={null}>
+                                    <ProtectedRoute>
                                         <MainLayout/>
                                     </ProtectedRoute>
                                 }
@@ -60,7 +61,7 @@ export default function App() {
 
                             <Route path="*" element={<Navigate to="/"/>}/>
                         </Routes>
-                    </BrowserRouter>
+                    </HashRouter>
                 </CallProvider>
             </WebSocketProvider>
         </AuthProvider>
