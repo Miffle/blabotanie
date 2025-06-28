@@ -12,7 +12,7 @@ export default function MinimizedCallWindow() {
     const navigate = useNavigate();
 
     const {t} = useTranslation();
-    if (!activeCall || location.pathname.startsWith('/call/active')) return null;
+    if (!activeCall || location.hash.startsWith('#/call/active')) return null;
 
     const handleRestore = () => {
         setMinimized(false);

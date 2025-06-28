@@ -26,7 +26,44 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({chil
     const {token, isAuthenticated} = useAuth();
     const clientRef = useRef<Client | null>(null);
     const [connected, setConnected] = useState(false);
-
+    // const [isAppVisible, setIsAppVisible] = useState(true);
+    // const incomingMessageSoundRef = useRef<HTMLAudioElement | null>(null);
+    //
+    // useEffect(() => {
+    //     incomingMessageSoundRef.current = new Audio('sounds/incoming-message.mp3');
+    // }, []);
+    // useEffect(() => {
+    //     try {
+    //         const {BrowserWindow} = window.require('@electron/remote');
+    //         const mainWindow = BrowserWindow.getFocusedWindow();
+    //
+    //         const handleShow = () => setIsAppVisible(true);
+    //         const handleHide = () => setIsAppVisible(false);
+    //         const handleMinimize = () => setIsAppVisible(false);
+    //         const handleRestore = () => setIsAppVisible(true);
+    //
+    //         mainWindow.on('show', handleShow);
+    //         mainWindow.on('hide', handleHide);
+    //         mainWindow.on('minimize', handleMinimize);
+    //         mainWindow.on('restore', handleRestore);
+    //
+    //         // Проверяем начальное состояние
+    //         setIsAppVisible(!mainWindow.isMinimized());
+    //
+    //         return () => {
+    //             mainWindow.removeListener('show', handleShow);
+    //             mainWindow.removeListener('hide', handleHide);
+    //             mainWindow.removeListener('minimize', handleMinimize);
+    //             mainWindow.removeListener('restore', handleRestore);
+    //         };
+    //     }catch (e){
+    //         console.error(e);
+    //     }
+    //
+    // }, []);
+    // useEffect(() => {
+    //     WebSocketEventsRouter.setAppVisibility(isAppVisible);
+    // }, [isAppVisible]);
     useEffect(() => {
         if (!isAuthenticated || !token) return;
         const socket = new SockJS(`${WS_URL}?access_token=${encodeURIComponent(token)}`);
@@ -106,7 +143,8 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({chil
         send('/app/call/offer', offer);
     }
     return (
-        <WebSocketContext.Provider value={{client: clientRef.current, connected, subscribe, send, startCall}}>
+        <WebSocketContext.Provider
+            value={{client: clientRef.current, connected, subscribe, send, startCall}}>
             {children}
         </WebSocketContext.Provider>
     );

@@ -1,14 +1,14 @@
 // @ts-ignore
-import React, { useEffect, useRef } from 'react';
-import { useCall } from '../context/CallContext';
-import { useWebSocket } from '../context/WebSocketContext';
-import { Answer, IceCandidate, Offer, EndCall } from '../dto/CallDTO';
-import { WebSocketEventsRouter } from '../services/WebSocketEventsRouter';
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useRef} from 'react';
+import {useCall} from '../context/CallContext';
+import {useWebSocket} from '../context/WebSocketContext';
+import {Answer, IceCandidate, Offer, EndCall} from '../dto/CallDTO';
+import {WebSocketEventsRouter} from '../services/WebSocketEventsRouter';
+import {useNavigate} from "react-router-dom";
 
 const iceServers = {
     iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' },
+        {urls: 'stun:stun.l.google.com:19302'},
         {
             urls: 'turn:193.233.113.180:3579',
             username: 'blabotanie',
@@ -18,14 +18,15 @@ const iceServers = {
 };
 
 export default function CallHandler() {
-    const { activeCall, setActiveCall, endCall, micEnabled, audioEnabled } = useCall();
-    const { send } = useWebSocket();
+    const {activeCall, setActiveCall, endCall, micEnabled, audioEnabled} = useCall();
+    const {send} = useWebSocket();
     const navigate = useNavigate();
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
     const pendingCandidatesRef = useRef<RTCIceCandidateInit[]>([]);
-
+    const outgoingCallSound = useRef(new Audio('sounds/outgoing-call.mp3'));
+    const isPlayingOutgoingCall = useRef(false);
     const uuid = localStorage.getItem('uuid')!;
     const isIncoming = activeCall?.initiatorUuid !== uuid;
 
@@ -58,7 +59,7 @@ export default function CallHandler() {
         const pc = new RTCPeerConnection(iceServers);
         pcRef.current = pc;
 
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({audio: true});
         localStreamRef.current = stream;
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
@@ -87,7 +88,7 @@ export default function CallHandler() {
         if (isIncoming) {
             console.log(isIncoming);
             await pc.setRemoteDescription(
-                new RTCSessionDescription({ type: 'offer', sdp: activeCall.sdp })
+                new RTCSessionDescription({type: 'offer', sdp: activeCall.sdp})
             );
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
@@ -103,6 +104,7 @@ export default function CallHandler() {
         } else {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
+            playOutgoingCall();
             const payload: Offer = {
                 ...activeCall,
                 sdp: offer.sdp,
@@ -114,17 +116,22 @@ export default function CallHandler() {
 
     useEffect(() => {
         // WebSocketEventsRouter.setIncomingCallHandler(() => {});
-        WebSocketEventsRouter.setRefreshHandler(() => {}); // если нужно
+        WebSocketEventsRouter.setRefreshHandler(() => {
+        }); // если нужно
 
-        WebSocketEventsRouter.setPresenceHandler(() => {});
-        WebSocketEventsRouter.setChatHandler(() => {});
+        WebSocketEventsRouter.setPresenceHandler(() => {
+        });
+        WebSocketEventsRouter.setChatHandler(() => {
+        });
 
-        WebSocketEventsRouter.setChatHistoryHandler(() => {});
+        WebSocketEventsRouter.setChatHistoryHandler(() => {
+        });
 
         WebSocketEventsRouter.setAnswerHandler(async (answer: Answer) => {
             if (!pcRef.current || !answer.sdp) return;
+            stopOutgoingCall();
             await pcRef.current.setRemoteDescription(
-                new RTCSessionDescription({ type: 'answer', sdp: answer.sdp })
+                new RTCSessionDescription({type: 'answer', sdp: answer.sdp})
             );
             for (const candidate of pendingCandidatesRef.current) {
                 try {
@@ -177,6 +184,61 @@ export default function CallHandler() {
             localStreamRef.current = null;
         }
     };
+    const playOutgoingCall = () => {
+        console.log('[Audio] Attempting to play outgoing call sound');
+        console.log('[Audio] Sound state before play:', {
+            readyState: outgoingCallSound.current.readyState,
+            error: outgoingCallSound.current.error,
+            duration: outgoingCallSound.current.duration,
+            volume: outgoingCallSound.current.volume,
+            muted: outgoingCallSound.current.muted,
+            src: outgoingCallSound.current.src
+        });
 
-    return <audio ref={remoteAudioRef} autoPlay />;
+        if (!isPlayingOutgoingCall.current) {
+            isPlayingOutgoingCall.current = true;
+            outgoingCallSound.current.currentTime = 0;
+            outgoingCallSound.current.volume = 1.0;
+            outgoingCallSound.current.muted = false;
+            outgoingCallSound.current.loop = true;
+            outgoingCallSound.current.play()
+                .then(() => {
+                    console.log('[Audio] Outgoing call sound started successfully');
+                    console.log('[Audio] Sound state after play:', {
+                        readyState: outgoingCallSound.current.readyState,
+                        error: outgoingCallSound.current.error,
+                        duration: outgoingCallSound.current.duration,
+                        volume: outgoingCallSound.current.volume,
+                        muted: outgoingCallSound.current.muted
+                    });
+                })
+                .catch(err => {
+                    console.error('[Audio] Error playing outgoing call sound:', err);
+                    console.log('[Audio] Sound state after error:', {
+                        readyState: outgoingCallSound.current.readyState,
+                        error: outgoingCallSound.current.error,
+                        duration: outgoingCallSound.current.duration,
+                        volume: outgoingCallSound.current.volume,
+                        muted: outgoingCallSound.current.muted
+                    });
+                    isPlayingOutgoingCall.current = false;
+                });
+        } else {
+            console.log('[Audio] Outgoing call sound is already playing');
+        }
+    };
+
+    const stopOutgoingCall = () => {
+        console.log('[Audio] Attempting to stop outgoing call sound');
+        if (isPlayingOutgoingCall.current) {
+            outgoingCallSound.current.pause();
+            outgoingCallSound.current.currentTime = 0;
+            isPlayingOutgoingCall.current = false;
+            console.log('[Audio] Outgoing call sound stopped successfully');
+        } else {
+            console.log('[Audio] Outgoing call sound is not playing');
+        }
+    };
+
+    return <audio ref={remoteAudioRef} autoPlay/>;
 }

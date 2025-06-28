@@ -1,14 +1,7 @@
 // @ts-ignore
-import React, {
-    useEffect,
-    useRef,
-    useState,
-    useImperativeHandle,
-    forwardRef,
-    ForwardedRef
-} from 'react';
+import React, {ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState} from 'react';
 import '../styles/chat-panel.css';
-import { useWebSocket } from '../context/WebSocketContext';
+import {useWebSocket} from '../context/WebSocketContext';
 import {useTranslation} from "react-i18next";
 
 export interface ChatPanelHandles {
@@ -23,12 +16,12 @@ interface ChatPanelProps {
 }
 
 const ChatPanel = forwardRef<ChatPanelHandles, ChatPanelProps>(
-    ({ chatId, type = 'private', currentUser }, ref: ForwardedRef<ChatPanelHandles>) => {
+    ({chatId, type = 'private', currentUser}, ref: ForwardedRef<ChatPanelHandles>) => {
         const {t} = useTranslation();
         const [messages, setMessages] = useState<any[]>([]);
         const [input, setInput] = useState('');
         const messagesEndRef = useRef<HTMLDivElement | null>(null);
-        const { send, subscribe, connected } = useWebSocket();
+        const {send, connected} = useWebSocket();
 
         useImperativeHandle(ref, () => ({
             addMessage: (msg) => {
@@ -52,7 +45,7 @@ const ChatPanel = forwardRef<ChatPanelHandles, ChatPanelProps>(
         }, [chatId, connected]);
 
         useEffect(() => {
-            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
         }, [messages]);
 
         const handleSend = () => {
@@ -75,7 +68,7 @@ const ChatPanel = forwardRef<ChatPanelHandles, ChatPanelProps>(
                             <div className="chat-content">{msg.message}</div>
                         </div>
                     ))}
-                    <div ref={messagesEndRef} />
+                    <div ref={messagesEndRef}/>
                 </div>
                 <div className="chat-input">
                     <input

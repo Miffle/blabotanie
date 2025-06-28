@@ -92,11 +92,11 @@ export default function CallHistory() {
                             <span className="call-type">{getCallType(call, currentUser)}</span>
                             <span className="call-status">{getCallStatus(call.callStatus)}</span>
                         </div>
-                        {call.callStatus !== "IN_PROCESS" &&
-                        <div className="call-meta">
-                            <span className="call-time">{formatDateTime(call.endTime)}</span>
-                            <span className="call-duration">{formatDuration(call.duration)}</span>
-                        </div>
+                        {(call.callStatus !== "IN_PROCESS" && call.callStatus !== "WAITING") &&
+                            <div className="call-meta">
+                                <span className="call-time">{formatDateTime(call.endTime)}</span>
+                                <span className="call-duration">{formatDuration(call.duration)}</span>
+                            </div>
                         }
                     </div>
 
