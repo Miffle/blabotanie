@@ -44,7 +44,7 @@ export default function CallHistory() {
     };
 
     const getCallType = (call, currentUser) => {
-        if (call.initiator === currentUser) {
+        if (call.initiatorUsername === currentUser) {
             return t('callsHistory.outgoing');
         }
         return t('callsHistory.incoming');
@@ -92,10 +92,12 @@ export default function CallHistory() {
                             <span className="call-type">{getCallType(call, currentUser)}</span>
                             <span className="call-status">{getCallStatus(call.callStatus)}</span>
                         </div>
+                        {call.callStatus !== "IN_PROCESS" &&
                         <div className="call-meta">
                             <span className="call-time">{formatDateTime(call.endTime)}</span>
                             <span className="call-duration">{formatDuration(call.duration)}</span>
                         </div>
+                        }
                     </div>
 
                 ))}

@@ -57,7 +57,22 @@
     "decline": "Decline",
     "cancel": "Cancel",
     "call": "Call",
-    "delete": "Delete"
+    "delete": "Delete",
+    "empty": "Empty"
+  },
+  "call": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "callingYou": "Calling you",
+    "restore": "Restore",
+    "HangUp": "Hang up",
+    "callContinues": "call continues",
+    "micOn": "Mic on",
+    "micOff": "Mic off",
+    "audioOn": "Audio on",
+    "audioOff": "Audio off",
+    "minimize": "Minimize"
+
   },
   "profile": {
     "editUsername": "Change",

@@ -46,6 +46,20 @@
     "back": "Назад",
     "next": "Вперед"
   },
+  "call": {
+    "accept": "Принять",
+    "decline": "Отклонить",
+    "callingYou": "звонит вам",
+    "restore": "Развернуть",
+    "HangUp": "Завершить",
+    "callContinues": "Идёт звонок",
+    "micOn": "Микрофон вкл.",
+    "micOff": "Микрофон выкл.",
+    "audioOn": "Звук вкл.",
+    "audioOff": "Звук выкл.",
+    "minimize": "Свернуть"
+
+  },
   "pagination": {
     "info": "Страница {{current}} из {{total}}"
   },
@@ -57,7 +71,8 @@
     "decline": "Отклонить",
     "cancel": "Отменить",
     "call": "Позвонить",
-    "delete": "Удалить"
+    "delete": "Удалить",
+    "empty": "Пусто"
   },
   "profile": {
     "editUsername": "Редактировать",

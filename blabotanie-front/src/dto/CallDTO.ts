@@ -23,7 +23,7 @@ export interface IceCandidate {
     calledUuid: string;  // UUID получателя
     calledUsername: string;  // Отображаемое имя получателя
     sdpMid: string;
-    sdpMLineIndex: bigint;
+    sdpMLineIndex: number;
     sdp: string;
 }
 

@@ -11,6 +11,7 @@ interface WebSocketContextType {
     connected: boolean;
     subscribe: (destination: string, callback: (body: any) => void) => void;
     send: (destination: string, payload: any) => void;
+    startCall: (offer: any) => void; // <-- добавили
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -71,11 +72,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({chil
 
         const topics = [
             '/user/queue/presence',
-            '/user/queue/offer',
-            '/user/queue/answer',
-            '/user/queue/ice-candidate',
-            '/user/queue/end',
-            '/user/queue/reject',
+            '/user/queue/call/offer',
+            '/user/queue/call/answer',
+            '/user/queue/call/ice-candidate',
+            '/user/queue/call/end-call',
+            '/user/queue/call/reject-call',
             '/user/queue/chat',
             '/user/queue/friend',
             '/user/queue/chat/history'
@@ -101,9 +102,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({chil
             body: JSON.stringify(payload),
         });
     };
-
+    const startCall = (offer: any) => {
+        send('/app/call/offer', offer);
+    }
     return (
-        <WebSocketContext.Provider value={{client: clientRef.current, connected, subscribe, send}}>
+        <WebSocketContext.Provider value={{client: clientRef.current, connected, subscribe, send, startCall}}>
             {children}
         </WebSocketContext.Provider>
     );

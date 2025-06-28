@@ -24,10 +24,11 @@ export default function FriendList({ friends, mode, handleFriendRequest }) {
             raw: user,
         };
     };
+    const sortedFriends = [...friends].sort((a, b) => Number(b.online) - Number(a.online));
 
     return (
         <div className="friend-list">
-            {friends.map((user: any) => {
+            {sortedFriends.map((user: any) => {
                 const normalized = normalizeUser(user);
                 return (
                     <FriendItem

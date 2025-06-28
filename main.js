@@ -9,7 +9,7 @@ let mainWindow;
 let deeplinkUrl = null;
 let appIsQuitting = false; // Лучше использовать отдельную переменную для отслеживания состояния
 app.setAppUserModelId("com.blabotanie.app"); // должен совпадать с appId из build
-Menu.setApplicationMenu(null);
+// Menu.setApplicationMenu(null);
 let tray = null;
 
 if (process.defaultApp) {
@@ -34,7 +34,7 @@ function createWindow () {
     });
     require("@electron/remote/main").enable(mainWindow.webContents);
 
-    mainWindow.loadFile('dist-frontend/index.html');
+    mainWindow.loadFile('dist2-frontend/index.html');
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
         if (deeplinkUrl) {

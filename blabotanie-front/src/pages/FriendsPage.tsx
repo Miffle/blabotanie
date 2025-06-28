@@ -95,7 +95,7 @@ export default function FriendsPage() {
                     {inviteStatus && <span className="status-text">{inviteStatus}</span>}
                 </form>
 
-                {!hasFriends && !hasRequests && <p className="empty-state">Пусто</p>}
+                {!hasFriends && !hasRequests && <p className="empty-state">{t("friendsPage.empty")}</p>}
 
                 {hasRequests && (
                     <div className="requests-section">
