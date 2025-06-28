@@ -1,6 +1,6 @@
 // Базовый URL для API и WebSocket
- export const API_BASE_URL = 'http://193.233.113.180:8087';
-//export const API_BASE_URL = 'http://localhost:8087';
+//  export const API_BASE_URL = 'http://193.233.113.180:8087';
+export const API_BASE_URL = 'http://localhost:8087';
 // API URL
 export const API_URL = `${API_BASE_URL}/api`;
 

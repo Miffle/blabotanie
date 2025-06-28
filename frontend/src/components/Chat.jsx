@@ -31,7 +31,7 @@ export default function Chat({ friend }) {
   // Только сообщения, относящиеся к текущему собеседнику
   const historyMessages = (wsChatHistory || []).filter(
     msg =>
-      (msg.fromUser === friend?.friendUsername || msg.toUser === friend?.friendUsername)
+      (msg.fromUserUsername === friend?.friendUsername || msg.toUserUsername === friend?.friendUsername)
   );
 
  const liveMessages = chatMessages;
@@ -43,7 +43,7 @@ export default function Chat({ friend }) {
     if (friend && friend.friendUsername) {
       setPage(0);
       setWsHasMore(true);
-      requestChatHistory(friend.friendUsername, 0, ITEMS_PER_PAGE);
+      requestChatHistory(friend.friendUuid,friend.friendUsername, 0, ITEMS_PER_PAGE);
     }
     // eslint-disable-next-line
   }, [friend?.friendUsername]);
@@ -99,7 +99,7 @@ export default function Chat({ friend }) {
   const handleSend = (e) => {
     e.preventDefault();
     if (!input.trim() || !friend) return;
-    sendChatMessage(friend.friendUsername, input.trim());
+    sendChatMessage(friend.friendUsername,friend.friendUuid, input.trim());
     setInput("");
   };
 
@@ -121,7 +121,7 @@ export default function Chat({ friend }) {
           <div
             key={idx}
             className={
-              msg.fromUser === username
+              msg.fromUserUsername === username
                 ? "chat-message chat-message-own"
                 : "chat-message"
             }

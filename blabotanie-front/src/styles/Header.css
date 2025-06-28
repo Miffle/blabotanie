@@ -1,0 +1,104 @@
+/* Триггер-зона внизу экрана */
+.trigger-zone {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 20px; /* можно настроить глубину */
+  width: 100%;
+  z-index: 999;
+}
+
+/* Панель */
+.dock {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  padding: 8px 24px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 16px 16px 0 0;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+}
+
+/* Показываем панель, если наведено на неё или на trigger-зону */
+.dock:hover,
+.trigger-zone:hover + .dock {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+
+.dock__nav {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.dock__nav a,
+.dock__logout {
+  all: unset;
+  font-size: 1rem;
+  color: #4b5563;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.dock__nav a:hover,
+.dock__logout:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* Обязательные стили для dock при фиксированном режиме */
+.dock.fixed {
+  opacity: 1 !important;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dock:not(.fixed) {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(8px);
+}
+
+.dock:not(.fixed):hover,
+.trigger-zone:hover + .dock:not(.fixed) {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dock__nav a.active {
+  font-weight: 500;
+  color: #222;
+  background: rgba(107, 114, 128, 0.1);
+}
+
+
+.dot {
+  display: inline-block;
+  margin-left: 4px;
+  width: 6px;
+  height: 6px;
+  background: #e11d48;
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .dock__nav {
+    gap: 12px;
+  }
+
+  .dock__nav a,
+  .dock__logout {
+    font-size: 0.9rem;
+    padding: 4px 6px;
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "mainPage": {
+    "guest": "Guest",
+    "hi": "Hi, {{username}}.",
+    "whereAreYou": "You are in a private communication space",
+    "whatNext": "What's next?",
+    "chooseFriend": "Select a friend and start a chat or call.",
+    "addFriend": "Add friends via search",
+    "notificationAboutRequests": "Notifications about new applications are received automatically.",
+    "dataSecured": "All data is protected and visible only to you and your friends."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "App language"
+  },
+  "header": {
+    "main": "Main",
+    "friends": "Friends",
+    "calls": "Calls",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "username": "Username",
+    "password": "Password",
+    "passwordConfirmation": "Confirm the password",
+    "loginButton": "Sign In",
+    "registerButton": "Sign Up",
+    "back": "Back"
+  },
+  "chat": {
+    "placeholder": "Type a message...",
+    "back": "Back"
+  },
+  "callsHistory": {
+    "header": "Calls history",
+    "outgoing": "outgoing",
+    "incoming": "incoming",
+    "ended": "Ended",
+    "declined": "Declined",
+    "inProcess": "In process",
+    "cancelled": "Missed/Cancelled",
+    "back": "Back",
+    "next": "Forward"
+  },
+  "pagination": {
+    "info": "Page {{current}} of {{total}}"
+  },
+  "friendsPage": {
+    "placeholder": "Username...",
+    "showRequests": "Show requests",
+    "hideRequests": "Hide requests",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cancel": "Cancel",
+    "call": "Call",
+    "delete": "Delete",
+    "empty": "Empty"
+  },
+  "call": {
+    "accept": "Accept",
+    "decline": "Decline",
+    "callingYou": "Calling you",
+    "restore": "Restore",
+    "HangUp": "Hang up",
+    "callContinues": "call continues",
+    "micOn": "Mic on",
+    "micOff": "Mic off",
+    "audioOn": "Audio on",
+    "audioOff": "Audio off",
+    "minimize": "Minimize"
+
+  },
+  "profile": {
+    "editUsername": "Change",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}

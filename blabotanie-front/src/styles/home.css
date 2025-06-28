@@ -1,0 +1,53 @@
+.homepage {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 64px 24px;
+/*  font-family: 'Inter', sans-serif;*/
+  color: #1f1f1f;
+}
+
+.welcome-block h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  color: #666;
+  margin-bottom: 3rem;
+}
+
+.tips-block h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.tips-block ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tips-block li {
+  font-size: 1.1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+/* Плавное появление */
+.fade-in {
+  animation: fadeIn 0.7s ease both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

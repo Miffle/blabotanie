@@ -55,12 +55,14 @@ function saveTokens(data) {
   localStorage.setItem("token", data.token);
   localStorage.setItem("refreshToken", data.refreshToken);
   localStorage.setItem("username", data.username);
+  localStorage.setItem("uuid", data.uuid);
 }
 
 export function clearTokens() {
   localStorage.removeItem("token");
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("username");
+  localStorage.removeItem("uuid");
 }
 
 export function isAuthenticated() {

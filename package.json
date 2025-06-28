@@ -1,13 +1,15 @@
 {
   "name": "blabotanie",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "Звоночки-говорочки",
   "author": "ftliwdt",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "dist": "electron-builder"
-  },
+    "start": "npm run build-frontend && electron .",
+    "build-frontend": "cd blabotanie-front && npm install && npm run build",
+    "dist": "npm run build-frontend && electron-builder"
+  }
+,
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@stomp/stompjs": "^5.4.0",

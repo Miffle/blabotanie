@@ -14,8 +14,9 @@ export default function FriendItem({ friend, onRemove, onSelect, selected, onCal
   };
 
   return (
-    <div className={`friend-item${selected ? " selected" : ""}`} key={friend.friendId} onClick={onSelect}>
+    <div className={`friend-item${selected ? " selected" : ""}`} key={friend.friendUuid} onClick={onSelect}>
       <span>
+      <div style={{ fontSize: "0.8em", color: "gray" }}>{friend.friendUuid}</div>
         <span className={`status-dot ${friend.online ? "online" : "offline"}`}></span>
         <b>{friend.friendUsername}</b>
       </span>
@@ -27,7 +28,7 @@ export default function FriendItem({ friend, onRemove, onSelect, selected, onCal
         >
           <i className="fas fa-phone" />
         </button>
-        <button title="Удалить" onClick={e => { e.stopPropagation(); onRemove(friend.friendId); }}><i className="fas fa-user-minus" /></button>
+        <button title="Удалить" onClick={e => { e.stopPropagation(); onRemove(friend.friendUuid); }}><i className="fas fa-user-minus" /></button>
       </div>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     </div>
