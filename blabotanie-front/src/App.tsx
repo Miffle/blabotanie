@@ -20,6 +20,8 @@ import CallHandler from "./handlers/CallHandler";
 import MinimizedCallWindow from "./components/MinimizedCallWindow";
 import './styles/call-ui.css';
 import './styles/App.css';
+import {AudioDeviceProvider} from "./context/AudioDeviceContext";
+import {DockSettingsProvider} from "./context/DockSettingsContext";
 
 const ProtectedRoute = ({children}: { children: JSX.Element }) => {
     const {isAuthenticated, initialized} = useAuth();
@@ -33,35 +35,39 @@ export default function App() {
         <AuthProvider>
             <WebSocketProvider>
                 <CallProvider>
-                    <HashRouter>
-                        <CallHandler/>
-                        <IncomingCallModal/>
-                        <MinimizedCallWindow />
-                        <Routes>
-                            <Route path="/login" element={<LoginPage/>}/>
-                            <Route path="/register" element={<RegisterPage/>}/>
+                    <AudioDeviceProvider>
+                        <DockSettingsProvider>
+                            <HashRouter>
+                                <CallHandler/>
+                                <IncomingCallModal/>
+                                <MinimizedCallWindow/>
+                                <Routes>
+                                    <Route path="/login" element={<LoginPage/>}/>
+                                    <Route path="/register" element={<RegisterPage/>}/>
 
-                            <Route
-                                path="/"
-                                element={
-                                    <ProtectedRoute>
-                                        <MainLayout/>
-                                    </ProtectedRoute>
-                                }
-                            >
-                                <Route index element={<HomePage/>}/>
-                                <Route path="friends" element={<FriendsPage/>}/>
-                                <Route path="calls" element={<CallHistory/>}/>
-                                <Route path="profile" element={<ProfilePage/>}/>
-                                <Route path="settings" element={<SettingsPage/>}/>
-                                <Route path="chat/:id" element={<ChatPage/>}/>
-                                <Route path="call/active/:id" element={<ActiveCallPage/>}/>
-                                {/* Добавь другие страницы сюда */}
-                            </Route>
+                                    <Route
+                                        path="/"
+                                        element={
+                                            <ProtectedRoute>
+                                                <MainLayout/>
+                                            </ProtectedRoute>
+                                        }
+                                    >
+                                        <Route index element={<HomePage/>}/>
+                                        <Route path="friends" element={<FriendsPage/>}/>
+                                        <Route path="calls" element={<CallHistory/>}/>
+                                        <Route path="profile" element={<ProfilePage/>}/>
+                                        <Route path="settings" element={<SettingsPage/>}/>
+                                        <Route path="chat/:id" element={<ChatPage/>}/>
+                                        <Route path="call/active/:id" element={<ActiveCallPage/>}/>
+                                        {/* Добавь другие страницы сюда */}
+                                    </Route>
 
-                            <Route path="*" element={<Navigate to="/"/>}/>
-                        </Routes>
-                    </HashRouter>
+                                    <Route path="*" element={<Navigate to="/"/>}/>
+                                </Routes>
+                            </HashRouter>
+                        </DockSettingsProvider>
+                    </AudioDeviceProvider>
                 </CallProvider>
             </WebSocketProvider>
         </AuthProvider>

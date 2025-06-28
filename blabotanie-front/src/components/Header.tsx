@@ -2,14 +2,17 @@ import {Link, useLocation} from 'react-router-dom';
 import {useAuth} from "../context/AuthContext.js";
 import "@/styles/Header.css";
 import {useTranslation} from "react-i18next";
+import { useDockSettings } from "../context/DockSettingsContext";
+
 export default function Header({incomingRequestsCount = 0}) {
     const {t} = useTranslation();
     const {logout} = useAuth();
     const location = useLocation();
+    const { autoHideDock } = useDockSettings();
     return (
         <div>
-            <div className="trigger-zone"/>
-            <div className={`dock`}>
+            {autoHideDock && <div className="trigger-zone" />}
+            <div className={`dock ${!autoHideDock ? "fixed" : ""}`}>
                 <nav className="dock__nav">
                     <Link to="/" className={location.pathname === "/" ? "active" : ""}>{t("header.main")}</Link>
                     <Link to="/friends" className={location.pathname === "/friends" ? "active" : ""}>
