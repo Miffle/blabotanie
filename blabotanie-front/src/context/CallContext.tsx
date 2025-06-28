@@ -1,6 +1,7 @@
 // @ts-ignore
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useRef, useState} from 'react';
 import {Answer, Offer} from '../dto/CallDTO';
+import {incomingCallSound, outgoingCallSound} from '../callAudio';
 
 interface CallContextType {
 
@@ -14,13 +15,19 @@ interface CallContextType {
     micEnabled: boolean;
     audioEnabled: boolean;
     setMinimized: (min: boolean) => void;
-
     // Методы
     startCall: (offer: Offer) => void;
     acceptCall: (answer: Answer) => void;
     setMicEnabled: (enabled: any) => void;
     setAudioEnabled: (enabled: any) => void;
     endCall: () => void;
+
+    isPlayingOutgoingCall: boolean;
+    isPlayingIncomingCall: boolean;
+    playIncomingCallSound: () => void;
+    stopIncomingCallSound: () => void;
+    playOutgoingCallSound: () => void;
+    stopOutgoingCallSound: () => void;
 }
 
 const CallContext = createContext<CallContextType | null>(null);
@@ -37,9 +44,44 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({children}
     const [minimized, setMinimized] = useState(false);
     const [micEnabled, setMicEnabled] = useState(true);
     const [audioEnabled, setAudioEnabled] = useState(true);
+    const [isPlayingOutgoingCall, setIsPlayingOutgoingCall] = useState(false);
+    const [isPlayingIncomingCall, setIsPlayingIncomingCall] = useState(false);
+
+    const playOutgoingCallSound = () => {
+        const sound = outgoingCallSound;
+        if (!isPlayingOutgoingCall) {
+            sound.loop = true;
+            sound.play();
+            setIsPlayingOutgoingCall(true);
+        }
+    };
+
+    const stopOutgoingCallSound = () => {
+        const sound = outgoingCallSound;
+        sound.pause();
+        sound.currentTime = 0;
+        setIsPlayingOutgoingCall(false);
+    };
+
+    const playIncomingCallSound = () => {
+        const sound = incomingCallSound;
+        if (!isPlayingIncomingCall) {
+            sound.loop = true;
+            sound.play();
+            setIsPlayingIncomingCall(true);
+        }
+    };
+
+    const stopIncomingCallSound = () => {
+        const sound = incomingCallSound;
+        sound.pause();
+        sound.currentTime = 0;
+        setIsPlayingIncomingCall(false);
+    };
 
     // Пока простая реализация
     const startCall = (offer: Offer) => {
+        playOutgoingCallSound()
         setActiveCall(offer);
         setIncomingCall(null);
         setMinimized(false);
@@ -55,6 +97,8 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({children}
         setActiveCall(null);
         setMinimized(false);
         setIncomingCall(null)
+        stopIncomingCallSound(); // 🔒 Гарантия
+        stopOutgoingCallSound(); // 🔒 Гарантия
         // CallHandler.endCall(); — будет
     };
 
@@ -72,7 +116,13 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({children}
             micEnabled,
             setMicEnabled,
             audioEnabled,
-            setAudioEnabled
+            setAudioEnabled,
+            isPlayingOutgoingCall,
+            isPlayingIncomingCall,
+            playIncomingCallSound,
+            stopIncomingCallSound,
+            playOutgoingCallSound,
+            stopOutgoingCallSound,
         }}>
             {children}
         </CallContext.Provider>
