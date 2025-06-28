@@ -3,14 +3,16 @@ import React, {useState, useEffect, useRef} from "react";
 import {useTranslation} from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useCall } from '../context/CallContext';
-
+import { useAudioDevices } from '../context/AudioDeviceContext';
 export default function ActionMenu({user, handleFriendRequest}) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const {t} = useTranslation();
     const {activeCall, setActiveCall } = useCall();
     const navigate = useNavigate();
-
+    const {
+        selectedInputId
+    } = useAudioDevices();
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -35,7 +37,7 @@ export default function ActionMenu({user, handleFriendRequest}) {
         if (action === "call") {
             try {
                 // Важный момент: запрашиваем в контексте пользовательского клика
-                await navigator.mediaDevices.getUserMedia({ audio: true });
+                await navigator.mediaDevices.getUserMedia({  audio: selectedInputId ? { deviceId: { exact: selectedInputId } } : true });
 
                 const myUuid = localStorage.getItem("uuid");
 

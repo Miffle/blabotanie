@@ -15,7 +15,7 @@ export interface PageResponse<T> {
 
 export const getCallsHistory = async (
     page: number,
-    size: number = 5
+    size: number = 6
 ): Promise<PageResponse<Call>> => {
     const response = await axiosInstance.get(ROUTES.CALL + "/history", {
         params: { page, size },
