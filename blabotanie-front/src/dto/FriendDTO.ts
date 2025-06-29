@@ -1,3 +1,5 @@
+import {UserStatus} from "../types/UserStatus";
+
 export interface SendRequest {
     recipientUsername: string;
 }
@@ -14,13 +16,13 @@ export interface FriendRequestResponse {
 export interface AllFriendsResponse {
     friendUuid: string;
     friendUsername: string;
-    isOnline: boolean;
+    status: UserStatus;
 }
 
 export interface FriendResponse {
     uuid: string;
     username: string;
-    online: boolean;
+    status: UserStatus;
 }
 
 export interface AcceptResponse {

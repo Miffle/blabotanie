@@ -36,7 +36,7 @@ export default function FriendsPage() {
             setFriends(prev =>
                 prev.map(friend =>
                     friend.friendUuid === presence.username
-                        ? { ...friend, online: presence.online }
+                        ? { ...friend, status: presence.status } // status вместо online
                         : friend
                 )
             );

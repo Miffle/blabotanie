@@ -1,6 +1,13 @@
 import FriendItem from './FriendItem';
 
 export default function FriendList({ friends, mode, handleFriendRequest }) {
+    const statusPriority: Record<string, number> = {
+        ONLINE: 1,
+        IN_CALL: 2,
+        AWAY: 3,
+        OFFLINE: 4,
+    };
+
     const normalizeUser = (user: any) => {
         if (mode === 'incoming') {
             return {
@@ -20,25 +27,27 @@ export default function FriendList({ friends, mode, handleFriendRequest }) {
         return {
             username: user.friendUsername,
             uuid: user.friendUuid,
-            online: user.online,
+            online: user.status,
             raw: user,
         };
     };
-    const sortedFriends = [...friends].sort((a, b) => Number(b.online) - Number(a.online));
+    const normalizedFriends = friends.map(normalizeUser);
 
+    const sortedFriends = normalizedFriends.sort((a, b) => {
+        const aPriority = statusPriority[a.online] ?? 999;
+        const bPriority = statusPriority[b.online] ?? 999;
+        return aPriority - bPriority;
+    });
     return (
         <div className="friend-list">
-            {sortedFriends.map((user: any) => {
-                const normalized = normalizeUser(user);
-                return (
-                    <FriendItem
-                        key={normalized.uuid}
-                        user={normalized}
-                        mode={mode}
-                        handleFriendRequest={handleFriendRequest}
-                    />
-                );
-            })}
+            {sortedFriends.map((user) => (
+                <FriendItem
+                    key={user.uuid}
+                    user={user}
+                    mode={mode}
+                    handleFriendRequest={handleFriendRequest}
+                />
+            ))}
         </div>
     );
 }

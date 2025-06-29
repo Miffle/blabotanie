@@ -10,7 +10,9 @@ export default function ActiveCallPage() {
     const {
         activeCall, setActiveCall, setMicEnabled, micEnabled,
         setAudioEnabled,
-        audioEnabled
+        audioEnabled,
+        peerHeadEnabled,
+        peerMicEnabled
     } = useCall();
     const navigate = useNavigate();
     const {send} = useWebSocket();
@@ -42,10 +44,16 @@ export default function ActiveCallPage() {
     return (
         <div className="active-call-page">
             <h2>Звонок с {recipientUsername}</h2>
-            <div className="avatar-circle">
-                {recipientUsername[0]?.toUpperCase()}
-            </div>
+            <div className={`avatar-wrapper`}>
+                {!peerHeadEnabled && <span className="head-left">×</span>}
 
+                <div className="avatar-circle">
+                    {!peerMicEnabled && <span className="mouth">×</span>}
+                    {recipientUsername.slice(0, 3)}
+                </div>
+
+                {!peerHeadEnabled && <span className="head-right">×</span>}
+            </div>
             <div className="call-status">{t("call.callContinues")}</div>
             <div className="call-buttons">
                 <button onClick={() => setMicEnabled(prev => !prev)}>

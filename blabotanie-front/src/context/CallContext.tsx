@@ -28,6 +28,10 @@ interface CallContextType {
     stopIncomingCallSound: () => void;
     playOutgoingCallSound: () => void;
     stopOutgoingCallSound: () => void;
+    peerMicEnabled: boolean;
+    setPeerMicEnabled: (enabled: boolean) => void;
+    peerHeadEnabled: boolean;
+    setPeerHeadEnabled: (enabled: boolean) => void;
 }
 
 const CallContext = createContext<CallContextType | null>(null);
@@ -46,6 +50,8 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({children}
     const [audioEnabled, setAudioEnabled] = useState(true);
     const [isPlayingOutgoingCall, setIsPlayingOutgoingCall] = useState(false);
     const [isPlayingIncomingCall, setIsPlayingIncomingCall] = useState(false);
+    const [peerMicEnabled, setPeerMicEnabled] = useState(true);
+    const [peerHeadEnabled, setPeerHeadEnabled] = useState(true);
 
     const playOutgoingCallSound = () => {
         const sound = outgoingCallSound;
@@ -123,6 +129,11 @@ export const CallProvider: React.FC<{ children: React.ReactNode }> = ({children}
             stopIncomingCallSound,
             playOutgoingCallSound,
             stopOutgoingCallSound,
+            peerMicEnabled,
+            setPeerMicEnabled,
+            peerHeadEnabled,
+            setPeerHeadEnabled
+
         }}>
             {children}
         </CallContext.Provider>

@@ -3,7 +3,7 @@
 .chat-panel {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 80px); /* с учётом возможного header/dock */
+    height: calc(100vh - 100px); /* с учётом возможного header/dock */
     max-width: 720px;
     margin: 0 auto;
     padding: 16px;

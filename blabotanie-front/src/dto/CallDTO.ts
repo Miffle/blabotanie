@@ -26,7 +26,14 @@ export interface IceCandidate {
     sdpMLineIndex: number;
     sdp: string;
 }
-
+export interface MuteAudio {
+    senderUuid: string;
+    senderUsername: string;
+    recipientUuid: string;
+    recipientUsername: string;
+    device: string;
+    isMuted: boolean;
+}
 
 export interface EndCall {
     recipientUuid: string; // UUID второго участника

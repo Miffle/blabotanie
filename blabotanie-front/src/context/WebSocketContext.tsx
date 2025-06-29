@@ -109,6 +109,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({chil
 
         const topics = [
             '/user/queue/presence',
+            '/user/queue/call/mute',
             '/user/queue/call/offer',
             '/user/queue/call/answer',
             '/user/queue/call/ice-candidate',

@@ -2,12 +2,7 @@
   "mainPage": {
     "guest": "Guest",
     "hi": "Hi, {{username}}.",
-    "whereAreYou": "You are in a private communication space",
-    "whatNext": "What's next?",
-    "chooseFriend": "Select a friend and start a chat or call.",
-    "addFriend": "Add friends via search",
-    "notificationAboutRequests": "Notifications about new applications are received automatically.",
-    "dataSecured": "All data is protected and visible only to you and your friends."
+    "whereAreYou": "You are in a private communication space"
   },
   "settings": {
     "title": "Settings",
@@ -52,6 +47,12 @@
   "pagination": {
     "info": "Page {{current}} of {{total}}"
   },
+  "status": {
+    "online": "Online",
+    "away": "Away",
+    "inCall": "In call",
+    "offline": "Offline"
+  },
   "friendsPage": {
     "placeholder": "Username...",
     "showRequests": "Show requests",
@@ -60,6 +61,7 @@
     "decline": "Decline",
     "cancel": "Cancel",
     "call": "Call",
+    "chat": "Chat",
     "delete": "Delete",
     "empty": "Empty"
   },
@@ -75,7 +77,6 @@
     "audioOn": "Audio on",
     "audioOff": "Audio off",
     "minimize": "Minimize"
-
   },
   "profile": {
     "editUsername": "Change",
