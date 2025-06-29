@@ -56,10 +56,10 @@ export default function App() {
                                         <Route index element={<HomePage/>}/>
                                         <Route path="friends" element={<FriendsPage/>}/>
                                         <Route path="calls" element={<CallHistory/>}/>
-                                        <Route path="profile" element={<ProfilePage/>}/>
                                         <Route path="settings" element={<SettingsPage/>}/>
                                         <Route path="chat/:id" element={<ChatPage/>}/>
                                         <Route path="call/active/:id" element={<ActiveCallPage/>}/>
+                                        <Route path="profile/:id" element={<ProfilePage/>}/>
                                         {/* Добавь другие страницы сюда */}
                                     </Route>
 

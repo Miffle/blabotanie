@@ -79,7 +79,7 @@ export default function ActionMenu({user, handleFriendRequest}) {
             </button>
             {open && (
                 <div className="action-dropdown">
-                    {user.online && !activeCall &&
+                    {user.raw.status === "ONLINE" && !activeCall &&
                         <button type="button" onClick={(e) => handleAction(e, "call")}>
                             {t("friendsPage.call")}
                         </button>

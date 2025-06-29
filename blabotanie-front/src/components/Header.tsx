@@ -19,7 +19,7 @@ export default function Header({incomingRequestsCount = 0}) {
                         {t("header.friends")}{incomingRequestsCount > 0 && <span className="dot"/>}
                     </Link>
                     <Link to="/calls" className={location.pathname === "/calls" ? "active" : ""}>{t("header.calls")}</Link>
-                    <Link to="/profile" className={location.pathname === "/profile" ? "active" : ""}>{t("header.profile")}</Link>
+                    <Link to={`/profile/${localStorage.getItem("uuid")}`} className={location.pathname === `/profile/${localStorage.getItem("uuid")}` ? "active" : ""}>{t("header.profile")}</Link>
                     <Link to="/settings" className={location.pathname === "/settings" ? "active" : ""}>{t("header.settings")}</Link>
                     <button className="dock__logout" onClick={logout}>{t("header.logout")}</button>
                 </nav>

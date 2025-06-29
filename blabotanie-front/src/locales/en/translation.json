@@ -47,6 +47,12 @@
   "pagination": {
     "info": "Page {{current}} of {{total}}"
   },
+  "status": {
+    "online": "Online",
+    "away": "Away",
+    "inCall": "In call",
+    "offline": "Offline"
+  },
   "friendsPage": {
     "placeholder": "Username...",
     "showRequests": "Show requests",
@@ -71,7 +77,6 @@
     "audioOn": "Audio on",
     "audioOff": "Audio off",
     "minimize": "Minimize"
-
   },
   "profile": {
     "editUsername": "Change",
