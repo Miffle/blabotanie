@@ -2,12 +2,7 @@
   "mainPage": {
     "guest": "Guest",
     "hi": "Hi, {{username}}.",
-    "whereAreYou": "You are in a private communication space",
-    "whatNext": "What's next?",
-    "chooseFriend": "Select a friend and start a chat or call.",
-    "addFriend": "Add friends via search",
-    "notificationAboutRequests": "Notifications about new applications are received automatically.",
-    "dataSecured": "All data is protected and visible only to you and your friends."
+    "whereAreYou": "You are in a private communication space"
   },
   "settings": {
     "title": "Settings",
@@ -60,6 +55,7 @@
     "decline": "Decline",
     "cancel": "Cancel",
     "call": "Call",
+    "chat": "Chat",
     "delete": "Delete",
     "empty": "Empty"
   },

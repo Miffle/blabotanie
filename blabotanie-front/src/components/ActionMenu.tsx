@@ -1,14 +1,15 @@
 // @ts-ignore
 import React, {useState, useEffect, useRef} from "react";
 import {useTranslation} from "react-i18next";
-import { useNavigate } from "react-router-dom";
-import { useCall } from '../context/CallContext';
-import { useAudioDevices } from '../context/AudioDeviceContext';
+import {useNavigate} from "react-router-dom";
+import {useCall} from '../context/CallContext';
+import {useAudioDevices} from '../context/AudioDeviceContext';
+
 export default function ActionMenu({user, handleFriendRequest}) {
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const {t} = useTranslation();
-    const {activeCall, setActiveCall } = useCall();
+    const {activeCall, setActiveCall} = useCall();
     const navigate = useNavigate();
     const {
         selectedInputId
@@ -24,7 +25,10 @@ export default function ActionMenu({user, handleFriendRequest}) {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
-
+    const openChat = (e) => {
+        e.stopPropagation();
+        navigate(`/chat/${user.uuid}`);
+    };
     const toggleMenu = (e) => {
         e.stopPropagation();
         setOpen((prev) => !prev);
@@ -37,7 +41,7 @@ export default function ActionMenu({user, handleFriendRequest}) {
         if (action === "call") {
             try {
                 // Важный момент: запрашиваем в контексте пользовательского клика
-                await navigator.mediaDevices.getUserMedia({  audio: selectedInputId ? { deviceId: { exact: selectedInputId } } : true });
+                await navigator.mediaDevices.getUserMedia({audio: selectedInputId ? {deviceId: {exact: selectedInputId}} : true});
 
                 const myUuid = localStorage.getItem("uuid");
 
@@ -80,6 +84,9 @@ export default function ActionMenu({user, handleFriendRequest}) {
                             {t("friendsPage.call")}
                         </button>
                     }
+                    <button type="button" onClick={(e) => openChat(e)}>
+                        {t("friendsPage.chat")}
+                    </button>
                     <button type="button" onClick={(e) => handleAction(e, "delete")}>
                         {t("friendsPage.delete")}
                     </button>

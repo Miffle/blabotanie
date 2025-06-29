@@ -1,4 +1,4 @@
-import { Answer, EndCall, IceCandidate, Offer } from '../dto/CallDTO';
+import {Answer, EndCall, IceCandidate, MuteAudio, Offer} from '../dto/CallDTO';
 import { Message } from '../dto/ChatDTO';
 import { UserOnlineChange } from '../dto/PresenceDTO';
 
@@ -15,6 +15,7 @@ let callAnswerHandler: ((answer: Answer) => void) | null = null;
 let iceCandidateHandler: ((candidate: IceCandidate) => void) | null = null;
 let callEndHandler: ((end: EndCall) => void) | null = null;
 let callRejectHandler: ((reject: EndCall) => void) | null = null;
+let muteHandler: ((mute: MuteAudio) => void) | null = null;
 
 // --- API для установки хендлеров ---
 export const WebSocketEventsRouter = {
@@ -29,6 +30,7 @@ export const WebSocketEventsRouter = {
     setIceCandidateHandler: (fn: (ice: IceCandidate) => void) => { iceCandidateHandler = fn; },
     setCallEndHandler: (fn: (end: EndCall) => void) => { callEndHandler = fn; },
     setCallRejectHandler: (fn: (reject: EndCall) => void) => { callRejectHandler = fn; },
+    setMuteHandler: (fn: (mute: MuteAudio) => void) => { muteHandler = fn; },
 
     // --- Главный обработчик сообщений WebSocket ---
     handleMessage: (destination: string, body: any) => {
@@ -36,6 +38,10 @@ export const WebSocketEventsRouter = {
             case '/user/queue/presence':
                 console.log('[WS] presence:', body);
                 presenceHandler?.(body);
+                break;
+            case '/user/queue/call/mute':
+                console.log('[WS] mute:', body);
+                muteHandler?.(body);
                 break;
 
             case '/user/queue/call/offer':

@@ -2,7 +2,7 @@
 import React, {useEffect, useRef} from 'react';
 import {useCall} from '../context/CallContext';
 import {useWebSocket} from '../context/WebSocketContext';
-import {Answer, EndCall, IceCandidate, Offer} from '../dto/CallDTO';
+import {Answer, EndCall, IceCandidate, MuteAudio, Offer} from '../dto/CallDTO';
 import {WebSocketEventsRouter} from '../services/WebSocketEventsRouter';
 import {useNavigate} from "react-router-dom";
 import {useAudioDevices} from '../context/AudioDeviceContext';
@@ -26,7 +26,9 @@ export default function CallHandler() {
         audioEnabled,
         playOutgoingCallSound,
         stopOutgoingCallSound,
-        stopIncomingCallSound
+        stopIncomingCallSound,
+        setPeerMicEnabled,
+        setPeerHeadEnabled,
     } = useCall();
     const {
         selectedInputId,
@@ -38,18 +40,36 @@ export default function CallHandler() {
     const localStreamRef = useRef<MediaStream | null>(null);
     const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
     const pendingCandidatesRef = useRef<RTCIceCandidateInit[]>([]);
-
     const uuid = localStorage.getItem('uuid')!;
+    const peerUuid = activeCall?.calledUuid === uuid ? activeCall.initiatorUuid : activeCall?.calledUuid;
+    const peerUsername = activeCall?.calledUuid === uuid ? activeCall.initiatorUsername : activeCall?.calledUsername;
     const isIncoming = activeCall?.initiatorUuid !== uuid;
 
     useEffect(() => {
         localStreamRef.current?.getAudioTracks().forEach(track => {
             track.enabled = micEnabled;
+            send("/app/call/muteMic", {
+                senderUuid: uuid,
+                senderUsername: localStorage.getItem("username"),
+                recipientUuid: peerUuid,
+                recipientUsername:peerUsername,
+                device: "MICROPHONE",
+                isMuted: !micEnabled,
+            } as MuteAudio);
         });
     }, [micEnabled]);
     useEffect(() => {
         if (remoteAudioRef.current) {
             remoteAudioRef.current.muted = !audioEnabled;
+            send("/app/call/muteHeadphones", {
+                senderUuid: uuid,
+                senderUsername: localStorage.getItem("username"),
+                recipientUuid: peerUuid,
+                recipientUsername:peerUsername,
+                device: "HEADPHONES",
+                isMuted: !audioEnabled,
+            } as MuteAudio);
+
         }
     }, [audioEnabled]);
     useEffect(() => {
@@ -134,7 +154,7 @@ export default function CallHandler() {
 
         const updateInputDevice = async () => {
             const newStream = await navigator.mediaDevices.getUserMedia({
-                audio: { deviceId: { exact: selectedInputId } }
+                audio: {deviceId: {exact: selectedInputId}}
             });
 
             // @ts-ignore
@@ -214,6 +234,22 @@ export default function CallHandler() {
             cleanup();
             endCall();
             navigate("/")
+        });
+        WebSocketEventsRouter.setMuteHandler((mute: MuteAudio) => {
+            const isPeer = mute.senderUuid !== uuid; // если это не мы
+            if (isPeer) {
+                switch (mute.device) {
+                    case "MICROPHONE": {
+                        setPeerMicEnabled(!mute.isMuted); // обновляем состояние
+                        break;
+                    }
+                    case "HEADPHONES": {
+                        setPeerHeadEnabled(!mute.isMuted);
+                        break;
+                    }
+
+                }
+            }
         });
     }, []);
 
