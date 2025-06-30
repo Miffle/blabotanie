@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, {JSX} from 'react';
-import {HashRouter, Routes, Route, Navigate} from 'react-router-dom';
+import {HashRouter, Navigate, Route, Routes} from 'react-router-dom';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 // @ts-ignore
@@ -22,6 +22,7 @@ import './styles/call-ui.css';
 import './styles/App.css';
 import {AudioDeviceProvider} from "./context/AudioDeviceContext";
 import {DockSettingsProvider} from "./context/DockSettingsContext";
+import UserActivityHandler from './components/UserActivityHandler';
 
 const ProtectedRoute = ({children}: { children: JSX.Element }) => {
     const {isAuthenticated, initialized} = useAuth();
@@ -34,6 +35,7 @@ export default function App() {
     return (
         <AuthProvider>
             <WebSocketProvider>
+                <UserActivityHandler/>
                 <CallProvider>
                     <AudioDeviceProvider>
                         <DockSettingsProvider>

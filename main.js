@@ -1,8 +1,7 @@
-const { app, BrowserWindow, Menu, Tray } = require('electron');
+const {app, BrowserWindow, Menu, Tray} = require('electron');
 const path = require('path');
-const { autoUpdater } = require("electron-updater");
-const { ipcMain } = require("electron");
-const { dialog } = require("electron");
+const {autoUpdater} = require("electron-updater");
+const {powerMonitor} = require("electron");
 autoUpdater.autoDownload = true;
 const gotTheLock = app.requestSingleInstanceLock();
 let mainWindow;
@@ -19,16 +18,23 @@ if (process.defaultApp) {
 } else {
     app.setAsDefaultProtocolClient('blabotanie')
 }
+setInterval(() => {
+    const idleTime = powerMonitor.getSystemIdleTime();
+    if (mainWindow) {
+        mainWindow.webContents.send('user-idle-time', idleTime);
+    }
+}, 5000);
 
-function createWindow () {
+function createWindow() {
     require('@electron/remote/main').initialize();
     mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
             enableRemoteModule: true, // важно!
+            preload: path.join(__dirname, 'preload.js'),
         },
         show: false // Сначала окно не показываем
     });
@@ -43,6 +49,7 @@ function createWindow () {
         }
     });
 }
+
 if (process.platform === 'win32') {
     deeplinkUrl = process.argv.find(arg => arg.startsWith('blabotanie://'));
 }
