@@ -1,10 +1,10 @@
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ActionMenu from './ActionMenu';
-import {useTranslation} from "react-i18next";
-import {statusStringToEnum, UserStatus} from "../types/UserStatus";
+import { useTranslation } from "react-i18next";
+import { statusStringToEnum, UserStatus } from "../types/UserStatus";
 
-export default function FriendItem({user, mode, handleFriendRequest}) {
-    const {t} = useTranslation();
+export default function FriendItem({ user, mode, handleFriendRequest }) {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const onClick = () => {
         if (mode === 'friend') {
@@ -32,13 +32,19 @@ export default function FriendItem({user, mode, handleFriendRequest}) {
 
     return (
         <div className="friend-item" onClick={onClick}>
-            <div className="info" onClick={openFriendProfile}>
+            <div className="info" onClick={() => {
+                if (mode === "friend") { return openFriendProfile }
+                else {
+                    return "";
+                }
+            }
+            }>
                 <span className={`username ${user.raw.status.toLowerCase()}`}>{user.username}</span>
                 {mode === 'friend' && renderStatusDot(user.raw.status)}
             </div>
 
             {mode === 'friend' && (
-                <ActionMenu user={user} handleFriendRequest={handleFriendRequest}/>
+                <ActionMenu user={user} handleFriendRequest={handleFriendRequest} />
             )}
 
             {mode === 'incoming' && (

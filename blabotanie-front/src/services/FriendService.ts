@@ -3,10 +3,12 @@ import {
     getAllFriends,
     getIncomingRequests,
     getOutgoingRequests,
+    searchQuery,
     sendFriendRequest
 } from '../api/rest/FriendsAPI';
 import {LoginRequest} from '../dto/AuthDTO';
 import {SendRequest} from "../dto/FriendDTO";
+import { UserResponse } from '../dto/UserDTO';
 
 export const FriendService = {
     getAllFriends: async () => {
@@ -14,6 +16,9 @@ export const FriendService = {
     },
     sendFriendRequest: async (friendUsername: string) => {
         return await sendFriendRequest({recipientUsername: friendUsername});
+    },
+    searchByQuery: async (query: string):Promise<UserResponse[]> => {
+        return await searchQuery(query);
     },
     getOutgoingRequests: async () => {
         return await getOutgoingRequests();

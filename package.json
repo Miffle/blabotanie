@@ -8,12 +8,12 @@
     "start": "npm run build-frontend && electron .",
     "build-frontend": "cd blabotanie-front && npm install && npm run build",
     "dist": "npm run build-frontend && electron-builder"
-  }
-,
+  },
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@stomp/stompjs": "^5.4.0",
     "electron-updater": "^6.6.2",
+    "react-hotkeys-hook": "^5.1.0",
     "sockjs-client": "^1.5.0"
   },
   "devDependencies": {

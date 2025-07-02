@@ -1,7 +1,6 @@
 export interface UserResponse {
     uuid: string;
     username: string;
-    online: boolean;
 }
 
 export interface SearchRequest {

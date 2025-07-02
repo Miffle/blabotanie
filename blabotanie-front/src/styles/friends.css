@@ -187,3 +187,25 @@
     transform: translateY(0);
   }
 }
+
+.suggestions{
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  width: 100%;
+  padding: 16px;
+  list-style-type: none;
+  margin: 0;
+  border-radius: 12px;
+}
+.suggestions li{
+  cursor: pointer;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  /* background-color: #f9f9f9; */
+  padding: 10px;
+}
+.suggestions li:hover{
+  background-color: #f9f9f9;
+  }
