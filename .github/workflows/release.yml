@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Generate lock file
+        run: npm install --package-lock-only
+
       - name: Get version
         id: get-version
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
@@ -27,44 +30,29 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Draft Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.get-version.outputs.version }}
-          name: v${{ steps.get-version.outputs.version }}
-          draft: true
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   build:
     needs: prepare-release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
         include:
-          - os: windows-latest
-            platform: win
-            artifact_name: Windows
           - os: macos-latest
             platform: mac
-            artifact_name: macOS
           - os: ubuntu-latest
             platform: linux
-            artifact_name: Linux
+          - os: windows-latest
+            platform: win
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Clean node_modules
-        run: rm -rf node_modules package-lock.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install Linux dependencies
         if: matrix.os == 'ubuntu-latest'
@@ -76,15 +64,14 @@ jobs:
             libnss3 \
             libxss1 \
             libgbm-dev \
-            libasound2t64 \
-            libdrm2 \
-            libxshmfence1
+            libasound2
 
       - name: Install dependencies
         run: |
-          npm install --legacy-peer-deps
-          npm install electron-builder@latest @electron/asar@latest fs-extra@latest
+          npm ci --legacy-peer-deps
+          npm install -g npm-force-resolutions
           npx npm-force-resolutions
+          npm install
 
       - name: Build Electron app
         run: npm run dist -- --${{ matrix.platform }}
@@ -94,17 +81,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Blabotanie-${{ matrix.artifact_name }}-v${{ needs.prepare-release.outputs.version }}
+          name: build-${{ matrix.os }}
           path: dist/*
-
-      - name: Update Release with artifacts
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ needs.prepare-release.outputs.version }}
-          files: |
-            dist/*.exe
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.deb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
