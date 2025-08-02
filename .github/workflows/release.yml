@@ -23,53 +23,57 @@ jobs:
             artifact_name: Linux
 
     steps:
-      - uses: actions/checkout@v4  # Обновлено до v4
+      - uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4  # Обновлено до v4
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
       - name: Extract version
-        id: version
-        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(node -p "require('./package.json').version")" >> $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Print VERSION (PowerShell)
+        run: echo "Version is $env:VERSION"
+        shell: pwsh
 
       - name: Create and push Git tag
-        if: matrix.os == 'windows-latest'  # Тегируем только один раз
+        if: matrix.os == 'windows-latest'  # Тегируем только один раз (чтобы избежать дублирования)
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git tag v${{ steps.version.outputs.version }}
-          git push origin v${{ steps.version.outputs.version }}
+          git tag v${{ env.VERSION }}
+          git push origin v${{ env.VERSION }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Используем стандартный токен
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Build Electron app
-        run: npm run dist -- --${{ matrix.platform }}  # Платформа из матрицы
+        run: npm run dist -- --${{ matrix.platform }}  # Собираем под текущую ОС
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4  # Критичное обновление!
+        uses: actions/upload-artifact@v3
         with:
-          name: Blabotanie-${{ matrix.artifact_name }}-v${{ steps.version.outputs.version }}
+          name: Blabotanie-${{ matrix.artifact_name }}-v${{ env.VERSION }}
           path: dist/*
 
       - name: Create GitHub Release
-        if: matrix.os == 'windows-latest'  # Релиз только один раз
+        if: matrix.os == 'windows-latest'  # Создаём релиз только один раз
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: v${{ steps.version.outputs.version }}
-          draft: false
+          tag_name: v${{ env.VERSION }}
+          name: v${{ env.VERSION }}
+          draft: true
           files: |
             dist/*.exe
             dist/*.dmg
             dist/*.AppImage
             dist/*.deb
+            dist/*.rpm
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
