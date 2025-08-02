@@ -40,9 +40,6 @@ export default function FriendItem({ user, mode, handleFriendRequest }) {
             }
             }>
                 <span className={`username ${user.raw.status.toLowerCase()}`}>{user.username}</span>
-                    {/* TODO Доделать shortBio */}
-                    <span className={`shortBio ${user.raw.status.toLowerCase()}`}> - короткий текст, который сможет добавить пользователь</span>
-                </div>
                 {mode === 'friend' && renderStatusDot(user.raw.status)}
             </div>
 

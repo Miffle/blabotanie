@@ -7,20 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            platform: win
-            artifact_name: Windows
-          - os: macos-latest
-            platform: mac
-            artifact_name: macOS
-          - os: ubuntu-latest
-            platform: linux
-            artifact_name: Linux
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3
@@ -42,38 +29,24 @@ jobs:
         shell: pwsh
 
       - name: Create and push Git tag
-        if: matrix.os == 'windows-latest'  # Тегируем только один раз (чтобы избежать дублирования)
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git tag v${{ env.VERSION }}
+          git tag v${{ env.VERSION }}  # Исправлено: env.VERSION (верхний регистр)
           git push origin v${{ env.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - name: Build Electron app
-        run: npm run dist -- --${{ matrix.platform }}  # Собираем под текущую ОС
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: Blabotanie-${{ matrix.artifact_name }}-v${{ env.VERSION }}
-          path: dist/*
-
       - name: Create GitHub Release
-        if: matrix.os == 'windows-latest'  # Создаём релиз только один раз
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.VERSION }}
-          name: v${{ env.VERSION }}
+          tag_name: v${{ env.VERSION }}  # Исправлено: env.VERSION
+          name: ${{ env.VERSION }}       # Исправлено: env.VERSION
           draft: true
-          files: |
-            dist/*.exe
-            dist/*.dmg
-            dist/*.AppImage
-            dist/*.deb
-            dist/*.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Build & publish
+        run: npm run dist
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
