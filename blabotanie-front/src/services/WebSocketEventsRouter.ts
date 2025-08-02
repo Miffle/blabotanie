@@ -3,7 +3,7 @@ import { Message } from '../dto/ChatDTO';
 import { UserOnlineChange } from '../dto/PresenceDTO';
 
 // --- Хендлеры по типам ---
-let refreshHandler: (() => void) | null = null;
+let refreshHandler: ((body:string) => void) | null = null;
 let presenceHandler: ((presence: UserOnlineChange) => void) | null = null;
 
 let chatMessageHandler: ((msg: Message) => void) | null = null;
@@ -19,7 +19,7 @@ let muteHandler: ((mute: MuteAudio) => void) | null = null;
 
 // --- API для установки хендлеров ---
 export const WebSocketEventsRouter = {
-    setRefreshHandler: (fn: () => void) => { refreshHandler = fn; },
+    setRefreshHandler: (fn: (body:string) => void) => { refreshHandler = fn; },
     setPresenceHandler: (fn: (presence: UserOnlineChange) => void) => { presenceHandler = fn; },
 
     setChatHandler: (fn: (msg: Message) => void) => { chatMessageHandler = fn; },
@@ -81,7 +81,7 @@ export const WebSocketEventsRouter = {
 
             case '/user/queue/friend':
                 console.log('[WS] friend update:', body);
-                refreshHandler?.();
+                refreshHandler?.(body);
                 break;
 
             default:

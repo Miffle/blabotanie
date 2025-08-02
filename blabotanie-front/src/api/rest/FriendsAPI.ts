@@ -6,17 +6,26 @@ import {SendRequest,
     AcceptResponse,
     DeclineResponse} from '../../dto/FriendDTO';
 import {ROUTES} from "../../constants/routes";
+import { UserResponse } from '../../dto/UserDTO';
 
 export const sendFriendRequest = async (data: SendRequest): Promise<FriendRequestResponse> => {
     const response = await axiosInstance.post(ROUTES.FRIENDS + "/request", data);
     return response.data;
 };
+export const searchQuery = async (query:string): Promise<UserResponse[]> => {
+    const response = await axiosInstance.get(ROUTES.USERS + "/search", {
+        params:{
+            "query":query
+        }
+    });
+    return response.data;
+};
 export const getIncomingRequests = async (): Promise<FriendRequestResponse> => {
-    const response = await axiosInstance.get(ROUTES.FRIENDS + "/requests/outgoing");
+    const response = await axiosInstance.get(ROUTES.FRIENDS + "/requests/incoming");
     return response.data;
 };
 export const getOutgoingRequests = async (): Promise<FriendRequestResponse> => {
-    const response = await axiosInstance.get(ROUTES.FRIENDS + "/requests/incoming");
+    const response = await axiosInstance.get(ROUTES.FRIENDS + "/requests/outgoing");
     return response.data;
 };
 export const getAllFriends = async (): Promise<AllFriendsResponse[]> => {
