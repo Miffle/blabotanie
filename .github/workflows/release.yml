@@ -6,39 +6,7 @@ on:
       - production
 
 jobs:
-  prepare-release:
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.get-version.outputs.version }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get version
-        id: get-version
-        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
-
-      - name: Create Git tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag v${{ steps.get-version.outputs.version }}
-          git push origin v${{ steps.get-version.outputs.version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create Draft Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ steps.get-version.outputs.version }}
-          name: v${{ steps.get-version.outputs.version }}
-          draft: true
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   build:
-    needs: prepare-release
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -55,7 +23,8 @@ jobs:
             artifact_name: Linux
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -83,6 +52,23 @@ jobs:
           npm install -g npm-force-resolutions
           npx npm-force-resolutions
 
+      - name: Extract version
+        id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Print version
+        run: echo "Building version ${{ steps.version.outputs.version }}"
+
+      - name: Create Git tag (Windows only)
+        if: matrix.os == 'windows-latest'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v${{ steps.version.outputs.version }}
+          git push origin v${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Electron app
         run: npm run dist -- --${{ matrix.platform }}
         env:
@@ -91,13 +77,16 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Blabotanie-${{ matrix.artifact_name }}-v${{ needs.prepare-release.outputs.version }}
+          name: Blabotanie-${{ matrix.artifact_name }}-v${{ steps.version.outputs.version }}
           path: dist/*
 
-      - name: Update Release with artifacts
+      - name: Create GitHub Release (Windows only)
+        if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ needs.prepare-release.outputs.version }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: v${{ steps.version.outputs.version }}
+          draft: false
           files: |
             dist/*.exe
             dist/*.dmg
