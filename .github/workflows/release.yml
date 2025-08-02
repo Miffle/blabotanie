@@ -57,9 +57,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean node_modules
-        run: rm -rf node_modules package-lock.json
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -82,9 +79,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install --legacy-peer-deps
-          npm install electron-builder@latest @electron/asar@latest fs-extra@latest
+          npm ci
+          npm install -g npm-force-resolutions
           npx npm-force-resolutions
+          npm install @electron/asar@latest @electron/osx-sign@latest core-js@latest glob@latest
 
       - name: Build Electron app
         run: npm run dist -- --${{ matrix.platform }}
