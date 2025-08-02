@@ -10,47 +10,47 @@
   "scripts": {
     "start": "npm run build-frontend && electron .",
     "build-frontend": "cd blabotanie-front && npm install && npm run build",
-    "dist": "npm run build-frontend && electron-builder"
+    "dist": "npm run build-frontend && electron-builder --publish always",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@stomp/stompjs": "^5.4.0",
     "electron-updater": "^6.6.2",
     "react-hotkeys-hook": "^5.1.0",
-    "sockjs-client": "^1.5.0"
+    "sockjs-client": "^1.5.0",
+    "core-js": "^3.35.1"
   },
   "devDependencies": {
+    "@electron/asar": "^3.2.4",
+    "@electron/osx-sign": "^2.0.0",
     "cpx": "^1.2.1",
-    "electron": "^37.2.5",
-    "electron-builder": "^26.0.12"
+    "electron": "^28.1.0",
+    "electron-builder": "^24.13.3",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10"
   },
   "build": {
     "appId": "com.blabotanie.app",
     "productName": "Blabotanie",
-    "icon": "resources/icon/icon256.ico",
+    "copyright": "Copyright © 2024 ${author}",
     "protocols": [
       {
         "name": "Blabotanie",
-        "schemes": [
-          "blabotanie"
-        ]
+        "schemes": ["blabotanie"]
       }
     ],
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "Miffle",
-        "repo": "blabotanie"
-      }
-    ],
+    "publish": {
+      "provider": "github",
+      "owner": "Miffle",
+      "repo": "blabotanie"
+    },
     "linux": {
-      "target": [
-        "AppImage",
-        "deb"
-      ],
+      "target": ["AppImage", "deb"],
       "category": "Utility",
       "maintainer": "miffle1337@mail.ru",
-      "icon": "resources/icon/icon256.png"
+      "icon": "resources/icon/icon256.png",
+      "synopsis": "Звоночки-говорочки"
     },
     "win": {
       "target": "nsis",
@@ -59,8 +59,24 @@
     "mac": {
       "target": "dmg",
       "category": "public.app-category.utilities",
-      "icon": "resources/icon/icon256.icns"
+      "icon": "resources/icon/icon256.icns",
+      "darkModeSupport": true
     },
-    "asar": true
+    "asar": true,
+    "npmRebuild": false,
+    "nodeGypRebuild": false,
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": ["**/*"]
+      }
+    ]
+  },
+  "resolutions": {
+    "fs-extra": "^11.2.0",
+    "jsonfile": "^6.1.0",
+    "glob": "^10.3.10",
+    "core-js": "^3.35.1"
   }
 }
