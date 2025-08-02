@@ -2,7 +2,10 @@
   "name": "blabotanie",
   "version": "3.0.4",
   "description": "Звоночки-говорочки",
-  "author": "ftliwdt",
+  "author": {
+    "name": "ftliwdt",
+    "email": "miffle1337@mail.ru"
+  },
   "main": "main.js",
   "scripts": {
     "start": "npm run build-frontend && electron .",
@@ -17,9 +20,9 @@
     "sockjs-client": "^1.5.0"
   },
   "devDependencies": {
-    "cpx": "^1.5.0",
-    "electron": "^25.0.0",
-    "electron-builder": "^23.6.0"
+    "cpx": "^1.2.1",
+    "electron": "^37.2.5",
+    "electron-builder": "^26.0.12"
   },
   "build": {
     "appId": "com.blabotanie.app",
@@ -41,8 +44,12 @@
       }
     ],
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "category": "Utility",
+      "maintainer": "miffle1337@mail.ru",
       "icon": "resources/icon/icon256.png"
     },
     "win": {

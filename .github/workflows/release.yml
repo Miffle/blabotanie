@@ -82,6 +82,7 @@ jobs:
           npm ci
           npm install -g npm-force-resolutions
           npx npm-force-resolutions
+          npm install @electron/asar@latest @electron/osx-sign@latest core-js@latest glob@latest
 
       - name: Build Electron app
         run: npm run dist -- --${{ matrix.platform }}
