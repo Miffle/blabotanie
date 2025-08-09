@@ -1,4 +1,4 @@
-import {getUserProfile, updateUsername} from '../api/rest/PorfileAPI';
+import {getUserProfile, updateBio, updateUsername} from '../api/rest/PorfileAPI';
 
 export const ProfileService = {
     getProfile: async (uuid:string) => {
@@ -11,6 +11,9 @@ export const ProfileService = {
         localStorage.setItem('uuid', response.uuid);
         localStorage.setItem('username', response.username);
         return response;
+    },
+    updateBio: async (newBio:string) => {
+        return await updateBio(newBio);
     },
 
 };

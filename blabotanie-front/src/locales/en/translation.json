@@ -81,6 +81,9 @@
   "profile": {
     "editUsername": "Change",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "noBio": "No bio.",
+    "noPosts": "No posts.",
+    "loading": "Loading..."
   }
 }

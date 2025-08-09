@@ -32,8 +32,9 @@ export default function FriendItem({ user, mode, handleFriendRequest }) {
 
     return (
         <div className="friend-item" onClick={onClick}>
-            <div className="info" onClick={() => {
-                if (mode === "friend") { return openFriendProfile }
+            <div className="info" onClick={(e) => {
+                if (mode === "friend") {
+                    return openFriendProfile(e) }
                 else {
                     return "";
                 }

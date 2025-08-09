@@ -13,3 +13,9 @@ export const updateUsername = async (newUsername: string): Promise<JwtResponse> 
     });
     return response.data;
 };
+export const updateBio = async (newBio: string): Promise<JwtResponse> => {
+    const response = await axiosInstance.put(ROUTES.USERS + "/bio", {
+        newBio: newBio,
+    });
+    return response.data;
+};

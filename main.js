@@ -10,7 +10,26 @@ let appIsQuitting = false; // Лучше использовать отдельн
 app.setAppUserModelId("com.blabotanie.app"); // должен совпадать с appId из build
 // Menu.setApplicationMenu(null);
 let tray = null;
-
+const isDev = !app.isPackaged;
+if (!isDev) {
+    Menu.setApplicationMenu(null);
+} else {
+    // Можно оставить стандартное меню или создать кастомное
+    const template = [
+        {
+            label: 'Developer',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+                { role: 'quit' }
+            ]
+        }
+    ];
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+}
 if (process.defaultApp) {
     if (process.argv.length >= 2) {
         app.setAsDefaultProtocolClient('blabotanie', process.execPath, [path.resolve(process.argv[1])])
@@ -35,7 +54,13 @@ function createWindow() {
             contextIsolation: true,
             enableRemoteModule: true, // важно!
             preload: path.join(__dirname, 'preload.js'),
+
         },
+        resizable: false,
+        // frame: false,
+        opacity:0.98,
+        ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
+        // titleBarStyle: 'hidden',
         show: false // Сначала окно не показываем
     });
     require("@electron/remote/main").enable(mainWindow.webContents);
