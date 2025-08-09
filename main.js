@@ -57,8 +57,8 @@ function createWindow() {
 
         },
         resizable: false,
-        // frame: false,
-        opacity:0.98,
+         frame: false,
+        opacity:1,
         ...(process.platform !== 'darwin' ? { titleBarOverlay: true } : {}),
         // titleBarStyle: 'hidden',
         show: false // Сначала окно не показываем
