@@ -1,8 +1,14 @@
-import {getUserProfile, updateBio, updateUsername} from '../api/rest/PorfileAPI';
+import {createPost, getPosts, getUserProfile, updateBio, updateUsername} from '../api/rest/PorfileAPI';
 
 export const ProfileService = {
     getProfile: async (uuid:string) => {
         return await getUserProfile(uuid);
+    },
+    getPosts: async (uuid:string) => {
+        return await getPosts(uuid);
+    },
+    createPost: async (postContent:string) => {
+        return await createPost(postContent);
     },
     updateUsername: async (username:string) => {
         const response =await updateUsername(username);
