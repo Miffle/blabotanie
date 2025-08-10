@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, {useEffect, useState, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import "../styles/profile.css";
 import {ProfileService} from "../services/ProfileService";
 import {useTranslation} from "react-i18next";
@@ -7,9 +7,10 @@ import {useParams} from "react-router-dom";
 
 interface Post {
     id: number;
-    title: string;
     content: string;
     likes: number;
+    likedByMe: boolean;
+    createdAt: string;
 }
 
 interface UserProfile {
@@ -32,22 +33,34 @@ export default function ProfilePage() {
     const uuid: string | undefined = useParams().id;
     const localUuid = localStorage.getItem("uuid");
     const isMyProfile = uuid === localUuid;
-
+    const [expandedPosts, setExpandedPosts] = useState<{ [key: number]: boolean }>({});
     const usernameInputRef = useRef<HTMLInputElement>(null);
     const bioInputRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (!uuid) return;
-        ProfileService.getProfile(uuid)
-            .then((data) => {
-                setProfile(data);
-                setNewUsername(data.username);
-                setNewBio(data.bio ?? "");
+        Promise.all([
+            ProfileService.getProfile(uuid),
+            ProfileService.getPosts(uuid)
+        ])
+            .then(([profileData, postsData]) => {
+                setProfile({
+                    ...profileData,
+                    posts: postsData.posts
+                });
+                profile?.posts?.reverse()
+                setNewUsername(profileData.username);
+                setNewBio(profileData.bio ?? "");
             })
             .finally(() => setLoading(false));
     }, [uuid]);
 
-
+    const togglePostExpand = (id: number) => {
+        setExpandedPosts(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
     const handleSave = () => {
         if (!profile) return;
         if (newUsername && newUsername !== profile.username) {
@@ -116,9 +129,14 @@ export default function ProfilePage() {
         // todo доделать логику проставления лайков
         // Handle like functionality here
     };
-    const sendNewPost = (e:any) => {
+    const sendNewPost = async (e: any) => {
         if (!newPostInput.trim()) return;
-        // todo доделать отправку поста
+        if (newPostInput.length > 2000) {
+            alert("Пост не может быть длиннее 2000 символов");
+            return;
+        }
+        const data = await ProfileService.createPost(newPostInput);
+        setProfile(prev => prev ? {...prev, posts: data.posts} : prev);
         setNewPostInput('');
 
     };
@@ -168,26 +186,48 @@ export default function ProfilePage() {
             <div className="person-posts">
                 {isMyProfile &&
                     <div className={"create-post"}>
-                        <input
+                        <textarea
                             className={"new-post-text"}
-                            type="text"
                             value={newPostInput}
                             onChange={(e) => setNewPostInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && sendNewPost(e)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    if (e.shiftKey) {
+                                        return;
+                                    } else {
+                                        e.preventDefault(); // чтобы не добавился перенос
+                                        sendNewPost(e);
+                                    }
+                                }
+                            }}
+                            rows={2}
                         />
                     </div>
                 }
                 {profile?.posts && profile.posts.length > 0 ? (
-                    profile.posts.map((post) => (
-                        <div key={post.id} className="profile-post">
-                            <div className="profile-post-title">{post.title}</div>
-                            <div className="profile-post-content">{post.content}</div>
-                            <div className="profile-post-likes" onClick={sendLike}>
-                                <span className={"likes-count"}>{post.likes}</span>
-                                <img className={"like"} src={"like.svg"}/>
+                    profile.posts.map((post) => {
+                        const isExpanded = expandedPosts[post.id] || false;
+                        const shouldTruncate = post.content.length > 200;
+                        const displayText = shouldTruncate && !isExpanded
+                            ? post.content.slice(0, 200) + "..."
+                            : post.content;
+                        return (<div key={post.id} className="profile-post">
+                                <div className="profile-post-content"> {displayText}
+                                    {shouldTruncate && (
+                                        <span
+                                            className="toggle-post"
+                                            onClick={() => togglePostExpand(post.id)}
+                                        ><br/>
+                                            {isExpanded ? "Свернуть" : "Развернуть"}
+                        </span>
+                                    )}</div>
+                                <div className="profile-post-likes" onClick={sendLike}>
+                                    <span className={"likes-count"}>{post.likes}</span>
+                                    <img className={"like"} src={"like.svg"}/>
+                                </div>
                             </div>
-                        </div>
-                    ))
+                        );
+                    })
                 ) : (
                     <div className="profile-no-posts">
                         {t("profile.noPosts") || "Нет постов."}
