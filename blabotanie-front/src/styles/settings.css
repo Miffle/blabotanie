@@ -35,3 +35,13 @@
     outline: none;
     border-color: #999;
 }
+
+.dock__logout {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+}

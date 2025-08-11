@@ -1,9 +1,9 @@
 import {Answer, EndCall, IceCandidate, MuteAudio, Offer} from '../dto/CallDTO';
-import { Message } from '../dto/ChatDTO';
-import { UserOnlineChange } from '../dto/PresenceDTO';
+import {Message} from '../dto/ChatDTO';
+import {UserOnlineChange} from '../dto/PresenceDTO';
 
 // --- Хендлеры по типам ---
-let refreshHandler: ((body:string) => void) | null = null;
+let refreshHandler: ((body: string) => void) | null = null;
 let presenceHandler: ((presence: UserOnlineChange) => void) | null = null;
 
 let chatMessageHandler: ((msg: Message) => void) | null = null;
@@ -19,18 +19,38 @@ let muteHandler: ((mute: MuteAudio) => void) | null = null;
 
 // --- API для установки хендлеров ---
 export const WebSocketEventsRouter = {
-    setRefreshHandler: (fn: (body:string) => void) => { refreshHandler = fn; },
-    setPresenceHandler: (fn: (presence: UserOnlineChange) => void) => { presenceHandler = fn; },
+    setRefreshHandler: (fn: (body: string) => void) => {
+        refreshHandler = fn;
+    },
+    setPresenceHandler: (fn: (presence: UserOnlineChange) => void) => {
+        presenceHandler = fn;
+    },
 
-    setChatHandler: (fn: (msg: Message) => void) => { chatMessageHandler = fn; },
-    setChatHistoryHandler: (fn: (history: any) => void) => { chatHistoryHandler = fn; },
+    setChatHandler: (fn: (msg: Message) => void) => {
+        chatMessageHandler = fn;
+    },
+    setChatHistoryHandler: (fn: (history: any) => void) => {
+        chatHistoryHandler = fn;
+    },
 
-    setIncomingCallHandler: (fn: (offer: Offer) => void) => { incomingCallHandler = fn; },
-    setAnswerHandler: (fn: (answer: Answer) => void) => { callAnswerHandler = fn; },
-    setIceCandidateHandler: (fn: (ice: IceCandidate) => void) => { iceCandidateHandler = fn; },
-    setCallEndHandler: (fn: (end: EndCall) => void) => { callEndHandler = fn; },
-    setCallRejectHandler: (fn: (reject: EndCall) => void) => { callRejectHandler = fn; },
-    setMuteHandler: (fn: (mute: MuteAudio) => void) => { muteHandler = fn; },
+    setIncomingCallHandler: (fn: (offer: Offer) => void) => {
+        incomingCallHandler = fn;
+    },
+    setAnswerHandler: (fn: (answer: Answer) => void) => {
+        callAnswerHandler = fn;
+    },
+    setIceCandidateHandler: (fn: (ice: IceCandidate) => void) => {
+        iceCandidateHandler = fn;
+    },
+    setCallEndHandler: (fn: (end: EndCall) => void) => {
+        callEndHandler = fn;
+    },
+    setCallRejectHandler: (fn: (reject: EndCall) => void) => {
+        callRejectHandler = fn;
+    },
+    setMuteHandler: (fn: (mute: MuteAudio) => void) => {
+        muteHandler = fn;
+    },
 
     // --- Главный обработчик сообщений WebSocket ---
     handleMessage: (destination: string, body: any) => {

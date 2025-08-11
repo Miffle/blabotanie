@@ -24,6 +24,7 @@
     font-size: 1.6rem;
     margin-bottom: 12px;
 }
+
 .auth-box h1 {
     margin: 0;
     font-size: 1.6rem;
@@ -41,9 +42,11 @@
     outline: none;
     transition: border-color 0.2s;
 }
+
 .auth-box input:focus {
     border-color: #2563eb;
 }
+
 .auth-box input:focus {
     border-color: #888;
 }
@@ -59,10 +62,12 @@
     cursor: pointer;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
+
 .auth-box button:hover {
     background: #f8f8f8;
     border-color: #666;
 }
+
 .auth-box button.secondary {
     border: 1px solid #ccc;
     background: transparent;

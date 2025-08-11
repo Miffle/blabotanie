@@ -81,5 +81,6 @@ The distribution and auto-update are being prepared using electron-builder.
 4. Updates are downloaded and installed without unnecessary user involvement
 
 ## Security
+
 1. All messages are screened before being displayed
 2. ICE and STUN are used for NAT traversal, voice only (no video)

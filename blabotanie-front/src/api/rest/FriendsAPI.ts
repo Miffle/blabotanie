@@ -1,21 +1,16 @@
 import axiosInstance from './axiosInstance';
-import {SendRequest,
-    FriendRequestResponse,
-    AllFriendsResponse,
-    FriendResponse,
-    AcceptResponse,
-    DeclineResponse} from '../../dto/FriendDTO';
+import {AllFriendsResponse, FriendRequestResponse, SendRequest} from '../../dto/FriendDTO';
 import {ROUTES} from "../../constants/routes";
-import { UserResponse } from '../../dto/UserDTO';
+import {UserResponse} from '../../dto/UserDTO';
 
 export const sendFriendRequest = async (data: SendRequest): Promise<FriendRequestResponse> => {
     const response = await axiosInstance.post(ROUTES.FRIENDS + "/request", data);
     return response.data;
 };
-export const searchQuery = async (query:string): Promise<UserResponse[]> => {
+export const searchQuery = async (query: string): Promise<UserResponse[]> => {
     const response = await axiosInstance.get(ROUTES.USERS + "/search", {
-        params:{
-            "query":query
+        params: {
+            "query": query
         }
     });
     return response.data;
@@ -33,18 +28,18 @@ export const getAllFriends = async (): Promise<AllFriendsResponse[]> => {
     return response.data;
 };
 export const acceptFriendRequest = async (requestId: bigint): Promise<AllFriendsResponse[]> => {
-    const response = await axiosInstance.post(ROUTES.FRIENDS + "/accept/"+ requestId);
+    const response = await axiosInstance.post(ROUTES.FRIENDS + "/accept/" + requestId);
     return response.data;
 };
 export const declineFriendRequest = async (requestId: bigint): Promise<AllFriendsResponse[]> => {
-    const response = await axiosInstance.post(ROUTES.FRIENDS + "/decline/"+ requestId);
+    const response = await axiosInstance.post(ROUTES.FRIENDS + "/decline/" + requestId);
     return response.data;
 };
 export const cancelFriendRequest = async (requestId: bigint): Promise<AllFriendsResponse[]> => {
-    const response = await axiosInstance.delete(ROUTES.FRIENDS + "/requests/"+ requestId);
+    const response = await axiosInstance.delete(ROUTES.FRIENDS + "/requests/" + requestId);
     return response.data;
 };
 export const deleteFriend = async (friendUuid: string): Promise<AllFriendsResponse[]> => {
-    const response = await axiosInstance.delete(ROUTES.FRIENDS + "/"+ friendUuid);
+    const response = await axiosInstance.delete(ROUTES.FRIENDS + "/" + friendUuid);
     return response.data;
 };

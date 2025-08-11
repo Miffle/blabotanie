@@ -1,88 +1,88 @@
 .call-history {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 48px 24px;
-  font-family: 'Inter', sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    font-family: 'Inter', sans-serif;
 }
 
 .call-history-title {
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin-bottom: 2rem;
-  color: #333;
-  text-align: center;
+    font-size: 1.4rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+    color: #333;
+    text-align: center;
 }
 
 .call-history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .call-history-item {
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
 }
 
 .call-line {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: #222;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #222;
 }
 
 .call-meta {
-  margin-top: 4px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: #666;
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #666;
 }
 
 .call-type, .call-status {
-  font-size: 0.9rem;
-  color: #888;
+    font-size: 0.9rem;
+    color: #888;
 }
 
 .call-duration {
-  font-style: italic;
+    font-style: italic;
 }
 
 .call-history-loading {
-  text-align: center;
-  padding: 2rem;
-  color: #999;
+    text-align: center;
+    padding: 2rem;
+    color: #999;
 }
 
 .pagination {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  align-items: center;
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    align-items: center;
 }
 
 .pagination-btn {
-  background: transparent;
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background 0.2s ease;
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s ease;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: #f9f9f9;
+    background: #f9f9f9;
 }
 
 .pagination-btn:disabled {
-  opacity: 0.4;
-  cursor: default;
+    opacity: 0.4;
+    cursor: default;
 }
 
 .pagination-info {
-  font-size: 0.9rem;
-  color: #555;
+    font-size: 0.9rem;
+    color: #555;
 }

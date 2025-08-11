@@ -1,6 +1,6 @@
 // FriendContext.tsx
 // @ts-ignore
-import React, { createContext, useContext } from 'react';
+import React, {createContext, useContext} from 'react';
 
 interface FriendContextType {
     refresh: () => void;

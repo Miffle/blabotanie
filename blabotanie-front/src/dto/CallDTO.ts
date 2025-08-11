@@ -26,6 +26,7 @@ export interface IceCandidate {
     sdpMLineIndex: number;
     sdp: string;
 }
+
 export interface MuteAudio {
     senderUuid: string;
     senderUsername: string;

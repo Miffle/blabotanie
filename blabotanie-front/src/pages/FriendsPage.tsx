@@ -1,12 +1,12 @@
 // @ts-ignore
-import React, { useState, useEffect } from "react";
-import { FriendService } from "../services/FriendService";
+import React, {useEffect, useState} from "react";
+import {FriendService} from "../services/FriendService";
 import FriendList from "../components/FriendList";
 import "../styles/friends.css";
-import { FriendContext } from '../context/FriendContext';
-import { WebSocketEventsRouter } from "../services/WebSocketEventsRouter";
-import { useTranslation } from "react-i18next";
-import { UserResponse } from "../dto/UserDTO";
+import {FriendContext} from '../context/FriendContext';
+import {WebSocketEventsRouter} from "../services/WebSocketEventsRouter";
+import {useTranslation} from "react-i18next";
+import {UserResponse} from "../dto/UserDTO";
 
 export default function FriendsPage() {
     const [search, setSearch] = useState("");
@@ -15,7 +15,7 @@ export default function FriendsPage() {
     const [incoming, setIncoming] = useState([]);
     const [outgoing, setOutgoing] = useState([]);
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const { t } = useTranslation();
+    const {t} = useTranslation();
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState([])
 
@@ -69,7 +69,7 @@ export default function FriendsPage() {
             setFriends(prev =>
                 prev.map(friend =>
                     friend.friendUuid === presence.username
-                        ? { ...friend, status: presence.status } // status вместо online
+                        ? {...friend, status: presence.status} // status вместо online
                         : friend
                 )
             );
@@ -138,7 +138,7 @@ export default function FriendsPage() {
         }
     };
     return (
-        <FriendContext.Provider value={{ refresh }}>
+        <FriendContext.Provider value={{refresh}}>
             <div className="friends-page">
                 <form onSubmit={sendRequest} className="add-friend-form">
                     <input

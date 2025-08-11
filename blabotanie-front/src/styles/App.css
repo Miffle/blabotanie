@@ -1,7 +1,12 @@
 body {
-  font-family: 'Rubik', sans-serif;
+    font-family: 'Rubik', sans-serif;
 }
+
 ::-webkit-scrollbar {
-  width: 2em;
-  height: 2em
+    width: 2em;
+    height: 2em
+}
+
+textarea {
+    font-family: 'Rubik', sans-serif;
 }

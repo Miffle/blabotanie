@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {API_URL} from "../../constants/serverUrl"
 import {AuthService} from "../../services/AuthService";
+
 const axiosInstance = axios.create({
     baseURL: API_URL,
 });
@@ -47,7 +48,7 @@ axiosInstance.interceptors.response.use(
 
         if (isRefreshing) {
             return new Promise((resolve, reject) => {
-                failedQueue.push({ resolve, reject });
+                failedQueue.push({resolve, reject});
             })
                 .then((token: string) => {
                     originalRequest.headers['Authorization'] = 'Bearer ' + token;
@@ -62,7 +63,7 @@ axiosInstance.interceptors.response.use(
             const refreshToken = localStorage.getItem('refreshToken');
             if (!refreshToken) throw err;
 
-            const res = await AuthService.refreshToken({ refreshToken });
+            const res = await AuthService.refreshToken({refreshToken});
 
             // Обновим токены
             localStorage.setItem('token', res.token);

@@ -52,7 +52,7 @@ export default function CallHandler() {
                 senderUuid: uuid,
                 senderUsername: localStorage.getItem("username"),
                 recipientUuid: peerUuid,
-                recipientUsername:peerUsername,
+                recipientUsername: peerUsername,
                 device: "MICROPHONE",
                 isMuted: !micEnabled,
             } as MuteAudio);
@@ -65,7 +65,7 @@ export default function CallHandler() {
                 senderUuid: uuid,
                 senderUsername: localStorage.getItem("username"),
                 recipientUuid: peerUuid,
-                recipientUsername:peerUsername,
+                recipientUsername: peerUsername,
                 device: "HEADPHONES",
                 isMuted: !audioEnabled,
             } as MuteAudio);

@@ -10,7 +10,6 @@
     "microphone": "Микрофон:",
     "headphones": "Наушники:",
     "autoClosingPanel": "Автоскрытие панели навигации:"
-
   },
   "header": {
     "main": "Главная",
@@ -57,7 +56,6 @@
     "audioOn": "Звук вкл.",
     "audioOff": "Звук выкл.",
     "minimize": "Свернуть"
-
   },
   "pagination": {
     "info": "Страница {{current}} из {{total}}"

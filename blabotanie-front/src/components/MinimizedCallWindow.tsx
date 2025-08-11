@@ -1,14 +1,14 @@
 // @ts-ignore
 import React from 'react';
-import { useCall } from '../context/CallContext';
-import { useWebSocket } from '../context/WebSocketContext';
-import { EndCall } from '../dto/CallDTO';
-import { useNavigate } from 'react-router-dom';
+import {useCall} from '../context/CallContext';
+import {useWebSocket} from '../context/WebSocketContext';
+import {EndCall} from '../dto/CallDTO';
+import {useNavigate} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
 
 export default function MinimizedCallWindow() {
-    const { activeCall, setMinimized, endCall } = useCall();
-    const { send } = useWebSocket();
+    const {activeCall, setMinimized, endCall} = useCall();
+    const {send} = useWebSocket();
     const navigate = useNavigate();
 
     const {t} = useTranslation();
@@ -35,7 +35,7 @@ export default function MinimizedCallWindow() {
     return (
         <div className="minimized-call-window">
             <div className="info">
-                <strong>{activeCall.calledUsername || activeCall.initiatorUsername}</strong><br />
+                <strong>{activeCall.calledUsername || activeCall.initiatorUsername}</strong><br/>
                 <span>{t("call.callContinues")}</span>
             </div>
             <button className="restore" onClick={handleRestore}>{t("call.restore")}</button>

@@ -1,5 +1,5 @@
 // context/AudioDeviceContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 interface AudioDeviceContextType {
     inputDevices: MediaDeviceInfo[];
@@ -18,7 +18,7 @@ export const useAudioDevices = () => {
     return ctx;
 };
 
-export const AudioDeviceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AudioDeviceProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [inputDevices, setInputDevices] = useState<MediaDeviceInfo[]>([]);
     const [outputDevices, setOutputDevices] = useState<MediaDeviceInfo[]>([]);
     const [selectedInputId, setSelectedInputId] = useState<string | null>(null);
