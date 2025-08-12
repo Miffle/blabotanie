@@ -1,13 +1,13 @@
 // @ts-ignore
-import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useAuth} from '../context/AuthContext';
+import {useNavigate} from 'react-router-dom';
 import '../styles/auth.css';
 import {useTranslation} from "react-i18next";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const {login} = useAuth();
     const navigate = useNavigate();
     const {t} = useTranslation();
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
                     {t("auth.registerButton")}
                 </button>
             </div>
-            <LanguageSwitcher />
+            <LanguageSwitcher/>
         </div>
     );
 }

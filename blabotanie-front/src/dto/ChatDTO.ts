@@ -6,12 +6,14 @@ export interface Message {
     message: string;
     sentAt: string[];
 }
+
 export interface HistoryRequest {
     withUserUuid: string;
     withUserUsername: string;
     page: bigint;
     pageSize: bigint;
 }
+
 export interface HistoryResponse {
     withUserUuid: string;
     withUserUsername: string;

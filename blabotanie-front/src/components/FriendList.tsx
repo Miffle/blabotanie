@@ -1,6 +1,6 @@
 import FriendItem from './FriendItem';
 
-export default function FriendList({ friends, mode, handleFriendRequest }) {
+export default function FriendList({friends, mode, handleFriendRequest}) {
     const statusPriority: Record<string, number> = {
         ONLINE: 1,
         IN_CALL: 2,

@@ -3,7 +3,7 @@
     bottom: 8px; /* немного выше края экрана */
     left: 50%;
     transform: translateX(-50%);
-    width: 10%;       /* ширина как у индикатора iPhone */
+    width: 10%; /* ширина как у индикатора iPhone */
     height: 4px;
     background: rgba(160, 160, 160);
     border-radius: 2px;

@@ -1,17 +1,14 @@
-import { href, Link, useLocation } from 'react-router-dom';
-import { useAuth } from "../context/AuthContext.js";
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import "@/styles/Header.css";
-import { useTranslation } from "react-i18next";
-import { useDockSettings } from "../context/DockSettingsContext";
-import { useHotkeys } from 'react-hotkeys-hook';
-import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
+import {useDockSettings} from "../context/DockSettingsContext";
+import {useHotkeys} from 'react-hotkeys-hook';
 
-export default function Header({ incomingRequestsCount = 0 }) {
-    const { t } = useTranslation();
-    const { logout } = useAuth();
+export default function Header({incomingRequestsCount = 0}) {
+    const {t} = useTranslation();
     const location = useLocation();
     const uuid = localStorage.getItem("uuid");
-    const { autoHideDock } = useDockSettings();
+    const {autoHideDock} = useDockSettings();
     const navigate = useNavigate();
 
     useHotkeys('ctrl+1', () => {
@@ -30,23 +27,25 @@ export default function Header({ incomingRequestsCount = 0 }) {
         navigate(`/profile/${uuid}`);
         console.log('Used hotkey, navigate to profilePage');
     });
-        useHotkeys('ctrl+5', () => {
+    useHotkeys('ctrl+5', () => {
         navigate("/settings");
         console.log('Used hotkey, navigate to settingsPage');
     });
     return (
         <div>
-            {autoHideDock && <div className="trigger-zone" />}
+            {autoHideDock && <div className="trigger-zone"/>}
             <div className={`dock ${!autoHideDock ? "fixed" : ""}`}>
                 <nav className="dock__nav">
                     <Link to="/" className={location.pathname === "/" ? "active" : ""}>{t("header.main")}</Link>
                     <Link to="/friends" className={location.pathname === "/friends" ? "active" : ""}>
-                        {t("header.friends")}{incomingRequestsCount > 0 && <span className="dot" />}
+                        {t("header.friends")}{incomingRequestsCount > 0 && <span className="dot"/>}
                     </Link>
-                    <Link to="/calls" className={location.pathname === "/calls" ? "active" : ""}>{t("header.calls")}</Link>
-                    <Link to={`/profile/${uuid}`} className={location.pathname === `/profile/${localStorage.getItem("uuid")}` ? "active" : ""}>{t("header.profile")}</Link>
-                    <Link to="/settings" className={location.pathname === "/settings" ? "active" : ""}>{t("header.settings")}</Link>
-                    <button className="dock__logout" onClick={logout}>{t("header.logout")}</button>
+                    <Link to="/calls"
+                          className={location.pathname === "/calls" ? "active" : ""}>{t("header.calls")}</Link>
+                    <Link to={`/profile/${uuid}`}
+                          className={location.pathname === `/profile/${localStorage.getItem("uuid")}` ? "active" : ""}>{t("header.profile")}</Link>
+                    <Link to="/settings"
+                          className={location.pathname === "/settings" ? "active" : ""}>{t("header.settings")}</Link>
                 </nav>
             </div>
         </div>

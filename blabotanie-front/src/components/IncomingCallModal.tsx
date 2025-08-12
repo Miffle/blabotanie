@@ -1,15 +1,16 @@
 // @ts-ignore
 import React, {useEffect, useRef} from 'react';
-import { useCall } from '../context/CallContext';
-import { useNavigate } from 'react-router-dom';
-import { WebSocketEventsRouter } from '../services/WebSocketEventsRouter';
+import {useCall} from '../context/CallContext';
+import {useNavigate} from 'react-router-dom';
+import {WebSocketEventsRouter} from '../services/WebSocketEventsRouter';
 import {EndCall} from "../dto/CallDTO";
-import { useWebSocket } from '../context/WebSocketContext';
+import {useWebSocket} from '../context/WebSocketContext';
 import {useTranslation} from "react-i18next";
+
 export default function IncomingCallModal() {
-    const { incomingCall, setIncomingCall, setActiveCall, playIncomingCallSound, stopIncomingCallSound } = useCall();
+    const {incomingCall, setIncomingCall, setActiveCall, playIncomingCallSound, stopIncomingCallSound} = useCall();
     const navigate = useNavigate();
-    const { send } = useWebSocket();
+    const {send} = useWebSocket();
     const {t} = useTranslation();
 
     useEffect(() => {

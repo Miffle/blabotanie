@@ -116,6 +116,7 @@
     /*background-color: #4caf50;*/
     /*color: white;*/
 }
+
 .avatar-wrapper {
     position: relative;
     width: 100px;
@@ -141,9 +142,11 @@
     color: #333;
     user-select: none;
 }
+
 .avatar-wrapper.speaking .avatar-circle {
     box-shadow: 0 0 0 2px #111;
 }
+
 /* Уши и рот */
 .head-left,
 .head-right,
@@ -181,7 +184,7 @@
 .modal-buttons .accept,
 .modal-buttons .decline,
 .active-call-page .minimize,
-.active-call-page .end{
+.active-call-page .end {
     background: transparent;
     border: 1px solid #ccc;
     padding: 6px 14px;

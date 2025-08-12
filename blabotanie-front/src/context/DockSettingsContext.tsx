@@ -1,5 +1,5 @@
 // src/context/DockSettingsContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 type DockSettingsContextType = {
     autoHideDock: boolean;
@@ -14,7 +14,7 @@ export const useDockSettings = () => {
     return ctx;
 };
 
-export const DockSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const DockSettingsProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
     const [autoHideDock, setAutoHideDock] = useState(false);
 
     useEffect(() => {
@@ -28,7 +28,7 @@ export const DockSettingsProvider: React.FC<{ children: React.ReactNode }> = ({ 
     };
 
     return (
-        <DockSettingsContext.Provider value={{ autoHideDock, toggleDockBehavior }}>
+        <DockSettingsContext.Provider value={{autoHideDock, toggleDockBehavior}}>
             {children}
         </DockSettingsContext.Provider>
     );

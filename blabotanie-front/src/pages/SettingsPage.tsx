@@ -4,10 +4,12 @@ import i18n from 'i18next';
 import {useAudioDevices} from '../context/AudioDeviceContext';
 import '../styles/settings.css'; // подключаем CSS
 import {useDockSettings} from "../context/DockSettingsContext";
+import {useAuth} from "../context/AuthContext";
 
 export default function SettingsPage() {
     const {t} = useTranslation();
     const {autoHideDock, toggleDockBehavior} = useDockSettings();
+    const {logout} = useAuth();
     const {
         inputDevices,
         outputDevices,
@@ -76,6 +78,11 @@ export default function SettingsPage() {
                         checked={autoHideDock}
                         onChange={(e) => toggleDockBehavior(e.target.checked)}
                     />
+                </div>
+            </div>
+            <div className="settings-row">
+                <div>
+                    <button className="dock__logout" onClick={logout}>{t("header.logout")}</button>
                 </div>
             </div>
         </div>

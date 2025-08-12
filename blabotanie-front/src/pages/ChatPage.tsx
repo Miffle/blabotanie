@@ -1,15 +1,15 @@
 // @ts-ignore
-import React, { useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import ChatPanel, { ChatPanelHandles } from '../components/ChatPanel';
-import { WebSocketEventsRouter } from "../services/WebSocketEventsRouter";
-import { useNavigate } from 'react-router-dom';
+import React, {useEffect, useRef} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import ChatPanel, {ChatPanelHandles} from '../components/ChatPanel';
+import {WebSocketEventsRouter} from "../services/WebSocketEventsRouter";
 import "../styles/chat-page.css"
 import {useTranslation} from "react-i18next";
+
 export default function ChatPage() {
     const {t} = useTranslation();
     const navigate = useNavigate();
-    const { id } = useParams();
+    const {id} = useParams();
     const chatRef = useRef<ChatPanelHandles>(null);
     const currentUser = localStorage.getItem('uuid') || 'anon';
 
@@ -25,11 +25,11 @@ export default function ChatPage() {
     }, [id]);
 
     return (
-        <div style={{ padding: '16px' }}>
-            <button className={"back-button"} onClick={() => navigate(-1)} style={{ marginBottom: '12px' }}>
+        <div style={{padding: '16px'}}>
+            <button className={"back-button"} onClick={() => navigate(-1)} style={{marginBottom: '12px'}}>
                 {t("chat.back")}
             </button>
-            <ChatPanel ref={chatRef} chatId={id!} currentUser={currentUser} />
+            <ChatPanel ref={chatRef} chatId={id!} currentUser={currentUser}/>
         </div>
     );
 }

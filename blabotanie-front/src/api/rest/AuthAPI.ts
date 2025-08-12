@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
-import {LoginRequest, RegisterRequest, JwtResponse, RefreshTokenRequest} from '../../dto/AuthDTO';
+import {JwtResponse, LoginRequest, RefreshTokenRequest, RegisterRequest} from '../../dto/AuthDTO';
 import {ROUTES} from "../../constants/routes";
 
 export const login = async (data: LoginRequest): Promise<JwtResponse> => {

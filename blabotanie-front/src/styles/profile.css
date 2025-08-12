@@ -1,16 +1,26 @@
 .profile-page {
-    max-width: 400px;
-    margin: 80px auto 0;
+    box-sizing: border-box;
     display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 50px 30px;
+    align-items: flex-start;
+    max-width: 100%;
+    height: 657px;
+}
+
+.profile-info {
+    display: flex;
+    justify-content: center;
     flex-direction: column;
     align-items: center;
-    font-family: 'Inter', sans-serif;
+    max-width: 520px;
 }
 
 .profile-avatar {
-    width: 88px;
-    height: 88px;
-    border-radius: 50%;
+    width: 114px;
+    height: 114px;
+    border-radius: 35%;
     background-color: #f4f4f4;
     color: #333;
     font-size: 2.4rem;
@@ -21,6 +31,13 @@
     margin-bottom: 24px;
 }
 
+.profile-username {
+    width: 506px;
+    display: flex;
+    justify-content: center;
+
+}
+
 .profile-username h2 {
     font-size: 1.5rem;
     font-weight: 500;
@@ -28,42 +45,109 @@
     margin-bottom: 16px;
 }
 
-.profile-input {
-    font-size: 1.2rem;
-    padding: 6px 0;
-    border: none;
-    border-bottom: 1px solid #aaa;
-    text-align: center;
-    outline: none;
-    width: 200px;
-    margin-bottom: 16px;
-    background: transparent;
-    color: #222;
-}
-
-.profile-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 8px;
-}
-
-.profile-actions button {
-    background: transparent;
-    border: 1px solid #ccc;
-    padding: 6px 14px;
-    font-size: 0.95rem;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.profile-actions button:hover {
-    background: #f6f6f6;
-}
-
 .profile-loading {
     text-align: center;
     padding-top: 100px;
     font-size: 1.1rem;
     color: #888;
+}
+
+.like {
+    width: 18px;
+    height: 17px;
+}
+
+.person-posts {
+    display: flex;
+    align-items: center;
+    max-width: 520px;
+    max-height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.profile-post {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    border-bottom: #ccc 1px solid;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.create-post {
+    width: 100%
+}
+
+.profile-input, .profile-textarea, .new-post-text {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+}
+
+.post-text {
+    display: flex;
+    flex-direction: column;
+    text-align: justify;
+    gap: 10px;
+}
+
+.profile-bio {
+    text-align: justify;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
+
+.profile-post-title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.toggle-post {
+    cursor: pointer;
+    margin-left: 5px;
+    display: flex;
+    justify-content: center;
+    font-size: 0.9em;
+}
+
+.toggle-post:hover {
+    text-decoration: underline;
+}
+
+.profile-post-content {
+    font-size: 16px;
+    width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.profile-post-likes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    user-select: none;
+    gap: 2px;
+}
+
+.profile-post-likes:hover {
+    cursor: pointer;
+}
+
+.likes-count {
+    font-size: 13px;
+    font-weight: lighter;
 }
