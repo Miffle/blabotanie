@@ -40,12 +40,22 @@ axiosInstance.interceptors.response.use(
 
         const isTokenExpired = err.response?.status === 401 &&
             (err.response?.data?.error === 'Токен истёк' || err.response?.data?.error === 'Невалидный токен');
+        const isRefreshTokenExpired = err.response?.status === 401 &&
+            (err.response?.data?.error === 'Refresh токен истёк' || err.response?.data?.error === 'Невалидный токен');
         console.log('Ошибка:', err.response?.data?.error);
         console.log('isTokenExpired:', isTokenExpired);
         if (!isTokenExpired || originalRequest._retry) {
             return Promise.reject(err);
         }
 
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/login';
+        }
+
+        if (isRefreshTokenExpired) {
+            logout();
+        }
         if (isRefreshing) {
             return new Promise((resolve, reject) => {
                 failedQueue.push({resolve, reject});
@@ -61,7 +71,9 @@ axiosInstance.interceptors.response.use(
 
         try {
             const refreshToken = localStorage.getItem('refreshToken');
-            if (!refreshToken) throw err;
+            if (!refreshToken) {
+                throw err;
+            }
 
             const res = await AuthService.refreshToken({refreshToken});
 
@@ -76,8 +88,7 @@ axiosInstance.interceptors.response.use(
             return axiosInstance(originalRequest);
         } catch (error) {
             processQueue(error, null);
-            localStorage.clear(); // не удалось обновить токен
-            window.location.href = '/login';
+            logout()
             throw error;
         } finally {
             isRefreshing = false;
